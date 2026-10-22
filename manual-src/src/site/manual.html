@@ -526,6 +526,9 @@ body.og #desk{top:0;bottom:0}
 // Second edition: the bigger rooms (1280 x 720) everywhere a room is drawn live.
 DM.useRooms(DM_ROOMS2);
 const C = DM.content;
+// The public repo: engine, rooms, starter and this booklet's source.
+const REPO = "https://github.com/thebeefasaurusrex/dream-machine";
+const repoLink = (label = "GitHub") => `<a href="${REPO}" target="_blank" rel="noopener">${label}</a>`;
 const IMG = window.DM_MANUAL_IMG || {};
 const $ = (s, el = document) => el.querySelector(s);
 const $$ = (s, el = document) => [...el.querySelectorAll(s)];
@@ -1001,7 +1004,7 @@ add("code", "The Code", `<div class="kick">Chapter 8 · Programming notes</div><
   <p class="dense">Everything below is <b>real, running code</b> extracted from the live build, not pseudocode. Hand this page (and the JS files) to a friend or another AI tool and they can stand the whole character system up anywhere there's a canvas.</p>
   <div class="dl" id="dlRow"><button type="button" data-dl="persona-module.js">persona-module.js</button><button type="button" data-dl="persona-engine.js">persona-engine.js</button><button type="button" class="alt" data-dl="meta.js">meta.js</button><button type="button" class="alt" data-dl="persona-live.js">persona-live.js</button></div>
   <p class="codestats" id="codeStats"></p>
-  <p class="small" style="margin:0 0 4px">Everything for the character system: schema, parts, recipes, engine. New in the second edition: the rooms and a one-file starter, in <button type="button" class="linkish" data-goto="rooms-code">Put Them in a Room</button>.</p>
+  <p class="small" style="margin:0 0 4px">Schema, parts, recipes, engine. The rooms and a one-file starter are new in <button type="button" class="linkish" data-goto="rooms-code">Put Them in a Room</button>. All of it lives on ${repoLink()}.</p>
   <h3 class="sub">1 · The files</h3>
   <table class="files"><thead class="sr"><tr><th>file</th><th>what it is</th></tr></thead>
     <tr><td>persona-module.js</td><td><b>The brain.</b> Extracted verbatim from the live app: the schema version, per-slot defaults, the full parts library (PERSONA_SLOTS), all 129 recipes (PERSONA_RECIPES), name normalization, validation, the deterministic generated-DNA fallback for unknown names, and <code>TeamLoopPersona.compile(name)</code>. Data + logic only, no drawing.</td></tr>
@@ -1040,7 +1043,8 @@ add("rooms-code", "Put Them in a Room", `<div class="kick">Chapter 8, continued 
     <tr><td>dream-machine-starter.html</td><td><b>All of it in one file.</b> Every script plus the room page on the facing page, already wired. Download it, double-click it, click the room to change rooms.</td></tr>
   </table>
   <div class="dl"><button type="button" class="nu" data-dl="dream-machine-rooms.js">dream-machine-rooms.js</button><button type="button" class="nu" data-dl="dream-machine-starter.html">dream-machine-starter.html</button></div>
-  <ul class="plain"><li><b>Room keys:</b> forgeFloor, nullArcade, dmParty, observatory, agoraArchive. <code>DM_ROOMS2.order</code> has them in order.</li><li><b>Motion off:</b> pass <code>true</code> for still and nothing in the room moves.</li></ul>`, { toc: "Put Them in a Room", nu: true });
+  <ul class="plain"><li><b>Room keys:</b> forgeFloor, nullArcade, dmParty, observatory, agoraArchive. <code>DM_ROOMS2.order</code> has them in order.</li><li><b>Motion off:</b> pass <code>true</code> for still and nothing in the room moves.</li></ul>
+  <div class="note"><b>The whole thing on GitHub</b>${repoLink("github.com/thebeefasaurusrex/dream-machine")} has the engine, the rooms, the starter and this booklet's source. One command rebuilds all of it: <code>node manual-src/build.mjs</code>. Fork it, file an issue, make weirder lil guys.</div>`, { toc: "Put Them in a Room", nu: true });
 add("rooms-listing", "A Room Page", `<div class="kick">Chapter 8, continued · the room page</div>
   <div class="listing tight"><div class="lh">a room with a crew in it<button data-copy="room">Copy</button></div><pre id="lsRoom"></pre></div>`, { nu: true });
 
@@ -1049,7 +1053,7 @@ add("deploying", "Deploying", `<div class="kick">Chapter 8, continued</div><div 
   <ul class="plain">
     <li><b>Drag &amp; drop:</b> go to app.netlify.com/drop and drop the site folder (index.html, og.png, _redirects). Live in seconds.</li>
     <li><b>Netlify CLI:</b> <code>npx netlify deploy --dir=site --prod</code></li>
-    <li><b>Git-connected:</b> push the folder, set publish directory to the site root, no build command.</li>
+    <li><b>Git-connected:</b> fork ${repoLink("thebeefasaurusrex/dream-machine")} and point your host at its <code>manual</code> folder, no build command.</li>
     <li><b>Local preview:</b> double-click index.html, or any static server.</li>
   </ul>
   <div class="note"><b>Old links still work</b>The old site had four pages. <code>_redirects</code> sends /process, /roster and /code (with or without .html) to the matching pages in this booklet, and the old section links like #rooms or #how still land in the right place.</div>
@@ -1085,6 +1089,7 @@ add("notes", "Notes", `<div class="kick">For your records</div><div class="band"
     <button type="button" data-goto="process"><span>The process</span><i></i><b>Atari in, NES out</b></button>
     <button type="button" data-goto="roster"><span>The roster</span><i></i><b>all 129</b></button>
     <button type="button" data-goto="code"><span>The code</span><i></i><b>three files</b></button>
+    <a href="${REPO}" target="_blank" rel="noopener"><span>This booklet's code</span><i></i><b>github &#8599;</b></a>
     <a href="${C.links.teamloop}" target="_blank" rel="noopener"><span>TeamLoop</span><i></i><b>github &#8599;</b></a>
     <a href="${C.links.mark}" target="_blank" rel="noopener"><span>Mark</span><i></i><b>marksalisburyai.com &#8599;</b></a>
     <div>&nbsp;</div>
