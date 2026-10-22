@@ -1,0 +1,3 @@
+# Keep LF everywhere so the build stays byte-identical to the live Manual on every OS.
+* text=auto eol=lf
+*.png binary
