@@ -1,0 +1,14 @@
+{
+  "name": "dream-machine",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Your AI agent sessions as 8-bit arcade characters: the character engine, the rooms, a one-file starter and The Manual.",
+  "license": "Apache-2.0",
+  "author": "Mark Salisbury",
+  "homepage": "https://starforge-dream-machine.netlify.app/",
+  "scripts": {
+    "build": "node manual-src/build.mjs",
+    "test": "node test/check.mjs"
+  },
+  "engines": { "node": ">=18" }
+}

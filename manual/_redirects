@@ -1,0 +1,12 @@
+# The Dream Machine used to be four pages. It is one booklet now (index.html).
+# These send the old addresses to the matching booklet pages. The browser keeps any old #section
+# (like /process.html#rooms), and the booklet maps those to the right page.
+# /index.html needs no rule: it is still the front page, and its old anchors (#what, #does, #upgrade, #how) are mapped in the page.
+/process.html        /?p=process   301
+/process             /?p=process   301
+/roster.html         /?p=roster    301
+/roster              /?p=roster    301
+/code.html           /?p=code      301
+/code                /?p=code      301
+/assets/img/*        /?p=process   301
+/assets/*            /?p=code      301

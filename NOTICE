@@ -1,0 +1,11 @@
+The Dream Machine
+Copyright 2026 Mark Salisbury
+
+The Dream Machine was made by Mark Salisbury with an AI team (Kimi, Codex and Claude Code).
+
+This repository includes third-party code and fonts under their own licenses:
+- GSAP 3.15 (GreenSock), manual-src/vendor/gsap/gsap.min.js and inlined in manual/index.html,
+  under the GSAP standard license: https://gsap.com/standard-license
+- Archivo Black, Archivo Narrow and Libre Baskerville (SIL Open Font License 1.1) and
+  Luckiest Guy (Apache License 2.0), from Google Fonts, cached in manual-src/cache/fonts
+  and inlined in manual/index.html.

@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Dream Machine room page</title>
+<style>html,body{margin:0;background:#05030a}canvas{max-width:100%;height:auto}</style>
+</head>
+<body>
+<canvas id="room" width="1280" height="720"></canvas>
+<script src="../engine/persona-module.js"></script>
+<script src="../engine/persona-engine.js"></script>
+<script src="../engine/persona-live.js"></script>
+<script src="../engine/dream-machine-rooms.js"></script>
+<script>
+  const ctx = document.getElementById("room").getContext("2d");
+  const CW = "voidArcade";  // or toxicCandy, spectralOxide
+  const ROOMS = DM_ROOMS2.order;  // the five room keys
+  let room = ROOMS[0];
+  const names = ["Sol", "Tesla", "Curie", "Jason", "Mark"];  // any names
+  const crew = names.map((n, i) => ({ dna: TeamLoopPersona.compile(n),
+    seed: i, x: 640, y: 560, go: 0 }));
+  // every place to stand in the room: work, think, attention, ...
+  const spots = () => Object.values(DM_ROOMS2.defs[room].zones).flat();
+  ctx.canvas.onclick = () => {  // click for the next room
+    room = ROOMS[(ROOMS.indexOf(room) + 1) % ROOMS.length];
+    crew.forEach(g => g.go = 0);
+  };
+  function frame(t){
+    ctx.imageSmoothingEnabled = false;
+    DM_ROOMS2.draw(ctx, room, CW, false, t);
+    for (const g of crew) {
+      if (t > g.go) {  // wander to a new spot every few seconds
+        const s = spots();
+        [g.tx, g.ty] = s[Math.floor(Math.random() * s.length)];
+        g.go = t + 3000 + Math.random() * 5000;
+      }
+      g.x += (g.tx - g.x) * 0.04;
+      g.y += (g.ty - g.y) * 0.04;
+    }
+    for (const g of [...crew].sort((a, b) => a.y - b.y)) {
+      const [c1, c2, c3] = g.dna.colors;
+      DM_LIVE.drawCharacter(ctx, Math.round(g.x), Math.round(g.y), 3,
+        g.dna, paletteCW(CW, c1, c2, c3), t, g.seed);
+    }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+</script>
+</body>
+</html>

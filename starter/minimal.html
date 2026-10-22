@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Dream Machine minimal page</title>
+<style>html,body{margin:0;background:#05030a}canvas{max-width:100%;height:auto}</style>
+</head>
+<body>
+<!-- minimal page -->
+<canvas id="c" width="240" height="236"></canvas>
+<script src="../engine/persona-module.js"></script>
+<script src="../engine/persona-engine.js"></script>
+<script src="../engine/persona-live.js"></script>
+<script>
+  const ctx = document.getElementById("c").getContext("2d");
+  ctx.imageSmoothingEnabled = false;
+  const dna = TeamLoopPersona.compile("Schrodinger");   // or ANY name
+  function frame(t){
+    ctx.clearRect(0,0,240,236);
+    const pal = paletteCW("voidArcade", dna.colors[0], dna.colors[1], dna.colors[2]);
+    DM_LIVE.drawCharacter(ctx, 120, 196, 4.2, dna, pal, t, 7);
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+</script>
+</body>
+</html>

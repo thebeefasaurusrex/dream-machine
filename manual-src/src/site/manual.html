@@ -1,0 +1,1625 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>The Dream Machine: a team you can see</title>
+<meta name="description" content="Case study: the Dream Machine turns AI agent sessions into 8-bit arcade characters living in rooms. How it was built, the NES-fidelity overhaul, and the 101 Formulations project, told as the instruction booklet it would have shipped with.">
+<link rel="canonical" href="https://starforge-dream-machine.netlify.app/">
+<meta name="theme-color" content="#FFD21C">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="The Dream Machine">
+<meta property="og:title" content="The Dream Machine · Instruction Booklet, 2nd Edition">
+<meta property="og:description" content="Your AI agent sessions, as 8-bit arcade characters, living in rooms, on your machine. The case study, the process, all 129 characters, the rebuilt rooms and the code, in one booklet.">
+<meta property="og:url" content="https://starforge-dream-machine.netlify.app/">
+<meta property="og:image" content="https://starforge-dream-machine.netlify.app/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The Dream Machine instruction booklet cover: the cloud logo over the model crew on a yellow starburst">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The Dream Machine · Instruction Booklet, 2nd Edition">
+<meta name="twitter:description" content="Your AI agent sessions, as 8-bit arcade characters, living in rooms, on your machine.">
+<meta name="twitter:image" content="https://starforge-dream-machine.netlify.app/og.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cg fill='%230b0b14'%3E%3Ccircle cx='20' cy='30' r='15'/%3E%3Ccircle cx='34' cy='22' r='17'/%3E%3Ccircle cx='47' cy='31' r='14'/%3E%3Ccircle cx='32' cy='40' r='16'/%3E%3C/g%3E%3Cg fill='%23FFF200'%3E%3Ccircle cx='20' cy='30' r='12'/%3E%3Ccircle cx='34' cy='22' r='14'/%3E%3Ccircle cx='47' cy='31' r='11'/%3E%3Ccircle cx='32' cy='40' r='13'/%3E%3C/g%3E%3Ctext x='32' y='38' font-family='Arial Black,Impact,sans-serif' font-size='17' text-anchor='middle' fill='%23FF1E1E'%3EDM%3C/text%3E%3C/svg%3E">
+<!--@FONTS Archivo Black|Archivo Narrow:ital,wght@0,400;0,600;0,700;1,600|Libre Baskerville:ital,wght@0,400;0,700;1,400|Luckiest Guy-->
+<style>
+:root{
+  --paper:#F4EEDC; --paper2:#EAE1C6; --ink:#1B1712; --ink2:#4B4337; --faint:#8A7F6B;
+  --red:#E1251B; --blue:#1C4FA0; --yel:#FFCF1F; --cy:#00A3E0; --mg:#E5007D; --grn:#2E8B57;
+  --head:"Archivo Black","Arial Black",Impact,sans-serif;
+  --cond:"Archivo Narrow","Arial Narrow","Roboto Condensed",sans-serif;
+  --serif:"Libre Baskerville",Georgia,"Times New Roman",serif;
+  --mono:ui-monospace,Consolas,"Courier New",monospace;
+  --fiber:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .34 0 0 0 0 .27 0 0 0 0 .16 0 0 0 .10 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  --fiber2:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='420' height='420'><filter id='f'><feTurbulence type='fractalNoise' baseFrequency='.05 .22' numOctaves='3' seed='4' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .45 0 0 0 0 .36 0 0 0 0 .2 0 0 0 .3 -.15'/></filter><rect width='100%' height='100%' filter='url(%23f)'/></svg>");
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{color:var(--ink);font:13px/1.55 var(--serif);background:#CBC2AE;
+  background-image:var(--fiber),radial-gradient(120% 90% at 50% 38%,#E9E2D2 0%,#D3CAB5 55%,#AFA48B 100%);min-height:100vh}
+body.book-mode{overflow:hidden;height:100vh}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:var(--blue)}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+canvas{image-rendering:pixelated;display:block}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:fixed;left:12px;top:-60px;z-index:200;background:var(--yel);border:2px solid var(--ink);padding:8px 12px;font:700 13px/1 var(--cond);letter-spacing:.1em;text-transform:uppercase;color:var(--ink);text-decoration:none}
+.skip:focus{top:8px}
+code{font:12px/1.4 var(--mono);background:rgba(28,79,160,.1);padding:0 3px}
+noscript p{max-width:640px;margin:90px auto;padding:20px;background:var(--paper);border:2px solid var(--ink)}
+
+/* ---------- chrome ---------- */
+.top{position:fixed;top:0;left:0;right:0;height:54px;z-index:50;display:flex;align-items:center;gap:12px;padding:0 18px;
+  background:rgba(244,238,220,.96);border-bottom:2px solid var(--ink);box-shadow:0 2px 0 var(--red)}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);min-width:0}
+.brand .mini{width:58px;height:40px;display:block;flex:none}
+.brand b{font:400 15px/1 var(--head);letter-spacing:.04em;transform:skewX(-10deg);display:inline-block;white-space:nowrap}
+.brand small{display:block;font:600 10px/1.2 var(--cond);letter-spacing:.22em;color:var(--red);transform:none}
+.where{flex:1;text-align:center;font:700 12px/1 var(--cond);letter-spacing:.2em;text-transform:uppercase;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.tbtn{border:2px solid var(--ink);background:var(--paper);padding:7px 11px;font:700 12px/1 var(--cond);letter-spacing:.14em;text-transform:uppercase;box-shadow:2px 2px 0 var(--ink);text-decoration:none;color:var(--ink);display:inline-block;white-space:nowrap}
+.tbtn:hover{background:var(--yel)}
+.tbtn:active{transform:translate(2px,2px);box-shadow:none}
+select.tbtn{padding:6px 8px;appearance:auto}
+.cwpick{display:flex;align-items:center;gap:6px;font:700 10px/1 var(--cond);letter-spacing:.18em;text-transform:uppercase;color:var(--ink2)}
+.ctl{position:fixed;bottom:0;left:0;right:0;height:62px;z-index:50;display:flex;align-items:center;justify-content:center;gap:14px}
+.turn{width:46px;height:46px;border-radius:50%;border:2px solid var(--ink);background:var(--red);color:#fff;font:400 18px/1 var(--head);box-shadow:3px 3px 0 var(--ink);flex:none}
+.turn:disabled{background:#bdb4a0;cursor:default;box-shadow:none}
+.turn:not(:disabled):active{transform:translate(3px,3px);box-shadow:none}
+.scrub{display:flex;gap:10px;align-items:center;background:rgba(244,238,220,.94);border:2px solid var(--ink);padding:7px 12px;box-shadow:3px 3px 0 var(--ink)}
+.scrub input{width:300px;accent-color:var(--red)}
+.pagelabel{font:700 11px/1 var(--cond);letter-spacing:.16em;text-transform:uppercase;min-width:150px;text-align:center}
+.sheet{position:fixed;top:60px;right:16px;z-index:60;width:320px;max-height:calc(100vh - 140px);overflow:auto;background:var(--paper);border:2px solid var(--ink);box-shadow:5px 5px 0 var(--ink);padding:10px 0;display:none}
+.sheet.open{display:block}
+.sheet button{display:flex;width:100%;gap:8px;border:0;background:none;padding:6px 16px;text-align:left;font:600 14px/1.2 var(--cond);letter-spacing:.04em;text-transform:uppercase}
+.sheet button.subt{padding-left:30px;font-size:12.5px;color:var(--ink2)}
+.sheet button i{flex:1;border-bottom:2px dotted var(--faint);transform:translateY(-4px)}
+.sheet button:hover,.sheet button:focus-visible{background:var(--yel)}
+
+/* ---------- desk + book ---------- */
+#desk{position:fixed;left:0;right:0;top:54px;bottom:62px}
+#bookWrap{position:absolute;left:50%;top:50%;width:1080px;height:740px;margin:-370px 0 0 -540px;transform-origin:50% 50%}
+#book{position:relative;width:1080px;height:740px;perspective:2800px}
+.stack{position:absolute;top:0;width:540px;height:740px;background:var(--paper2);z-index:0}
+.stack.L{left:0}.stack.R{left:540px}
+.leaf{position:absolute;left:540px;top:0;width:540px;height:740px;transform-origin:0 50%;transform-style:preserve-3d}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden}
+.face.back{transform:rotateY(180deg)}
+.shade{position:absolute;inset:0;pointer-events:none;opacity:0;z-index:5}
+.face.front .shade{background:linear-gradient(90deg,rgba(40,25,0,.55),rgba(40,25,0,.08) 60%,rgba(255,255,255,.2))}
+.face.back .shade{background:linear-gradient(270deg,rgba(40,25,0,.55),rgba(40,25,0,.08) 60%,rgba(255,255,255,.2))}
+.edgetabs{position:absolute;left:1080px;top:34px;display:flex;flex-direction:column;gap:6px;z-index:1}
+.edgetabs button{width:86px;height:46px;border:2px solid var(--ink);border-left:0;border-radius:0 9px 9px 0;background:var(--tab,#ddd);color:var(--ink);padding:0 8px 0 10px;text-align:left;
+  font:700 11px/1.05 var(--cond);letter-spacing:.12em;text-transform:uppercase;box-shadow:3px 3px 0 rgba(27,23,18,.35)}
+.edgetabs button:hover,.edgetabs button[aria-current="true"]{width:94px;filter:brightness(1.06)}
+.edgetabs button[aria-current="true"]{box-shadow:3px 3px 0 var(--ink)}
+
+/* ---------- pages ---------- */
+.page{position:relative;width:540px;height:740px;padding:36px 42px 54px;overflow:hidden;
+  background-color:var(--paper);background-image:var(--fiber),var(--fiber2),radial-gradient(140% 110% at 50% 45%,transparent 55%,rgba(170,120,30,.16))}
+.face.front .page::before,.face.back .page::before{content:"";position:absolute;top:0;bottom:0;width:46px;pointer-events:none;z-index:4}
+.face.front .page::before{left:0;background:linear-gradient(90deg,rgba(60,40,10,.28),rgba(60,40,10,.06) 40%,transparent)}
+.face.back .page::before{right:0;background:linear-gradient(270deg,rgba(60,40,10,.28),rgba(60,40,10,.06) 40%,transparent)}
+.staple{position:absolute;width:5px;height:58px;z-index:6;background:linear-gradient(90deg,#8d8a83,#e7e4dc 45%,#7b776f);border-radius:2px;box-shadow:0 1px 1px rgba(0,0,0,.35)}
+.face.front .staple{left:-2px}.face.back .staple{right:-2px}
+.staple.s1{top:150px}.staple.s2{bottom:150px}
+.folio{position:absolute;left:0;right:0;bottom:18px;text-align:center;font:700 11px/1 var(--cond);letter-spacing:.22em;color:var(--ink2)}
+.folio::before,.folio::after{content:"";display:inline-block;width:26px;height:2px;background:var(--ink);vertical-align:middle;margin:0 10px}
+.kick{font:700 11px/1 var(--cond);letter-spacing:.26em;text-transform:uppercase;color:var(--red);margin:0 0 8px}
+.band{display:flex;align-items:center;gap:10px;margin:0 0 14px}
+.band > span,.band > h2{display:inline-block;background:var(--ink);color:var(--paper);font:400 23px/1 var(--head);padding:8px 16px 7px 12px;transform:skewX(-12deg);transform-origin:0 100%;letter-spacing:.01em;white-space:nowrap;margin:0}
+.band::after{content:"";flex:1;height:7px;background:repeating-linear-gradient(90deg,var(--red) 0 20px,transparent 20px 25px)}
+.band.blue > span,.band.blue > h2{background:var(--blue)}
+.band.grn > span,.band.grn > h2{background:#1F6B45}
+.mis{text-shadow:2px 1.5px 0 rgba(0,163,224,.7),-1.5px -1px 0 rgba(229,0,125,.55)}
+h3.sub{font:400 19px/1.05 var(--head);margin:14px 0 6px;transform:skewX(-9deg);transform-origin:0 100%}
+p{margin:0 0 9px}
+.drop::first-letter{float:left;font:400 46px/.8 var(--head);color:var(--red);margin:4px 8px 0 0;text-shadow:2px 2px 0 var(--ink)}
+.small{font-size:11.5px;line-height:1.5;color:var(--ink2)}
+.dense{font-size:12.2px;line-height:1.52}
+.cond{font-family:var(--cond)}
+.btnp{display:inline-block;border:2px solid var(--ink);background:var(--yel);padding:8px 13px 7px;font:700 12px/1 var(--cond);letter-spacing:.16em;text-transform:uppercase;text-decoration:none;color:var(--ink);box-shadow:3px 3px 0 var(--ink)}
+.btnp:hover{background:#fff}
+.btnp:active{transform:translate(3px,3px);box-shadow:none}
+.btnp.alt{background:var(--paper)}
+.btnrow{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0 4px}
+.plate{border:3px solid var(--ink);background:var(--ink);box-shadow:4px 4px 0 rgba(27,23,18,.25)}
+.plate canvas{width:100%;height:auto}
+.cap{font:600 11px/1.3 var(--cond);letter-spacing:.08em;text-transform:uppercase;color:var(--ink2);margin-top:6px}
+.cap b{color:var(--red);margin-right:6px}
+.dots{background-image:radial-gradient(var(--ink) .9px,transparent 1.3px);background-size:5px 5px}
+.tagline{font:700 11px/1.3 var(--cond);letter-spacing:.2em;text-transform:uppercase;color:var(--blue);margin:0 0 8px}
+
+/* cover */
+.page.cover{padding:0;background-color:#FFD21C}
+.cv-burst{position:absolute;inset:0;background:repeating-conic-gradient(from 3deg at 50% 64%,#FFD21C 0 6deg,#FFB208 6deg 12deg)}
+.cv-burst::after{content:"";position:absolute;inset:0;background:radial-gradient(70% 55% at 50% 64%,transparent 40%,rgba(225,37,27,.85) 100%)}
+.cv-dots{position:absolute;inset:0;background-image:radial-gradient(#7a1206 1.1px,transparent 1.6px);background-size:7px 7px;
+  -webkit-mask-image:radial-gradient(75% 60% at 50% 64%,transparent 45%,#000 95%);mask-image:radial-gradient(75% 60% at 50% 64%,transparent 45%,#000 95%);opacity:.55}
+.cv-band{position:absolute;left:0;right:0;top:0;height:38px;background:var(--ink);color:var(--paper);display:flex;justify-content:space-between;align-items:center;gap:10px;padding:0 18px;
+  font:700 12px/1 var(--cond);letter-spacing:.24em;border-bottom:4px solid var(--red)}
+.cv-band span:last-child{color:var(--yel);letter-spacing:.14em}
+.cv-logo{position:absolute;left:62px;right:62px;top:46px;z-index:3;filter:drop-shadow(5px 6px 0 rgba(27,23,18,.55))}
+.cv-logo svg{width:100%;height:auto;display:block}
+.cv-cast{position:absolute;left:42px;top:296px;width:456px;height:300px;z-index:4}
+.cv-seal{position:absolute;right:16px;top:-58px;width:108px;height:108px;z-index:5;transform:rotate(12deg);filter:drop-shadow(3px 3px 0 rgba(27,23,18,.5))}
+.cv-ed{position:absolute;left:16px;top:-30px;z-index:5;transform:rotate(-4deg);background:var(--red);color:var(--paper);border:3px solid var(--ink);padding:5px 10px 4px;
+  font:400 15px/1 var(--head);letter-spacing:.02em;box-shadow:3px 3px 0 rgba(27,23,18,.55)}
+.cv-ed small{display:block;font:700 9px/1.2 var(--cond);letter-spacing:.2em;color:var(--yel);margin-top:3px}
+em.nu{flex:none;align-self:center;font:700 9px/1 var(--cond);letter-spacing:.14em;font-style:normal;background:var(--red);color:#fff;padding:2px 4px 1px;transform:translateY(-1px)}
+.thennow{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start}
+.thennow .fig,.thennow .note{margin:0}
+.rooms5.ed2 img{image-rendering:auto}
+.cv-title{position:absolute;left:0;right:0;bottom:0;height:112px;background:var(--ink);color:var(--paper);padding:14px 22px 0;z-index:3;border-top:5px solid var(--blue)}
+.cv-title h1{margin:0;display:block;font:400 30px/1 var(--head);transform:skewX(-11deg);transform-origin:0 100%;color:var(--yel)}
+.cv-title h1.mis{text-shadow:2.5px 2px 0 rgba(0,163,224,.85),-2px -1px 0 rgba(229,0,125,.7)}
+.cv-title span{display:block;font:italic 12.5px/1.45 var(--serif);margin-top:8px;color:#efe7d2;max-width:360px}
+.cv-title em{position:absolute;right:20px;bottom:16px;font:700 10px/1.3 var(--cond);letter-spacing:.2em;text-align:right;font-style:normal;color:var(--yel)}
+.dogear{position:absolute;right:0;bottom:0;width:64px;height:64px;border:0;padding:0;z-index:8;background:linear-gradient(135deg,transparent 49%,rgba(27,23,18,.35) 50%,#f7f1df 52%,#d8ccad 100%);
+  clip-path:polygon(100% 0,100% 100%,0 100%);animation:curl 2.6s ease-in-out infinite}
+.dogear.left{left:0;right:auto;background:linear-gradient(225deg,transparent 49%,rgba(27,23,18,.35) 50%,#f7f1df 52%,#d8ccad 100%);clip-path:polygon(0 0,100% 100%,0 100%)}
+@keyframes curl{0%,100%{width:44px;height:44px}50%{width:66px;height:66px}}
+.dm-reduced .dogear{animation:none;width:52px;height:52px}
+.page:not(.cover) .dogear{animation:none;width:34px;height:34px;opacity:.85}
+.page:not(.cover) .dogear:hover{width:52px;height:52px}
+
+/* contents */
+.toc{list-style:none;margin:0;padding:0}
+.toc button{display:flex;align-items:baseline;width:100%;gap:8px;border:0;background:none;padding:1px 2px;text-align:left;font:600 14px/1.2 var(--cond);letter-spacing:.03em;text-transform:uppercase}
+.toc button i{flex:1;border-bottom:2px dotted var(--ink2);transform:translateY(-4px)}
+.toc button b{font:400 14px/1 var(--head)}
+.toc button:hover{color:var(--red)}
+.toc li.part button{font-size:12px;color:var(--red);letter-spacing:.2em;padding-top:7px}
+.oldpages{margin-top:10px;border:2px solid var(--ink);padding:8px 11px;background:rgba(255,207,31,.25);font:600 11.5px/1.4 var(--cond);letter-spacing:.03em}
+.oldpages b{display:block;font:400 13px/1.2 var(--head);margin-bottom:3px}
+
+/* welcome */
+.caution{border:3px solid var(--ink);padding:12px 14px 6px;margin:12px 0;background:rgba(255,255,255,.35);position:relative}
+.caution h4{margin:0 0 8px;font:400 18px/1 var(--head);display:flex;gap:10px;align-items:center}
+.caution ol{margin:0;padding-left:20px}
+.caution li{margin:0 0 7px}
+.mascot{display:flex;gap:12px;align-items:flex-end;margin-top:10px}
+.mascot .plate{width:132px;flex:none}
+.bubble{position:relative;border:2px solid var(--ink);background:#fff;padding:9px 12px;font:600 13px/1.35 var(--cond);border-radius:14px;margin-bottom:24px}
+.bubble::after{content:"";position:absolute;left:-12px;bottom:12px;border:7px solid transparent;border-right:12px solid var(--ink)}
+
+/* story + what */
+.pull{font:italic 17px/1.4 var(--serif);border-top:4px solid var(--ink);border-bottom:4px solid var(--ink);padding:10px 2px;margin:12px 0;color:var(--blue)}
+.box{border:2px solid var(--ink);padding:11px 13px;margin-top:10px;background:rgba(28,79,160,.08)}
+.box h4{margin:0 0 6px;font:400 14px/1 var(--head);letter-spacing:.02em}
+.lineup{margin:10px 0 0}
+
+/* how to play */
+.pad{width:100%;height:auto;display:block;margin:4px 0 6px}
+.how4{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px}
+.how4 div{border-top:3px solid var(--ink);padding-top:6px}
+.how4 h4{margin:0 0 3px;font:400 15px/1 var(--head);display:flex;align-items:center;gap:7px}
+.num{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--yel);border:2px solid var(--ink);font:400 12px/1 var(--head);flex:none}
+.how4 p{font-size:12px;line-height:1.45;margin:0}
+.feat{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.feat li{display:grid;grid-template-columns:30px 1fr;gap:10px}
+.feat .num{width:28px;height:28px;background:var(--ink);color:var(--paper);font-size:13px}
+.feat h4{margin:0;font:700 14px/1.2 var(--cond);letter-spacing:.1em;text-transform:uppercase}
+.feat p{margin:2px 0 0;font-size:12px;line-height:1.45}
+.states{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.states span{font:700 10.5px/1 var(--cond);letter-spacing:.14em;text-transform:uppercase;border:2px solid var(--ink);padding:5px 8px 4px;background:#fff}
+.states i{display:inline-block;width:9px;height:9px;margin-right:6px;border:1px solid var(--ink);vertical-align:-1px}
+
+/* bio + index */
+.bio-name{font:400 44px/1 var(--head);margin:2px 0 2px;white-space:nowrap;overflow:hidden;transform:skewX(-9deg);transform-origin:0 100%}
+.bio-era{font:700 12px/1.2 var(--cond);letter-spacing:.16em;text-transform:uppercase;color:var(--red);margin-bottom:12px}
+.bio-row{display:flex;gap:16px;align-items:flex-start}
+.bio-row .plate{width:236px;flex:none}
+.bio-note{font-size:13px;line-height:1.55;margin:0}
+.bio-note::first-letter{text-transform:uppercase}
+.stats{margin-top:14px;border:3px solid var(--ink);background:#fff}
+.stats-h{background:var(--ink);color:var(--paper);font:400 14px/1 var(--head);letter-spacing:.06em;padding:6px 10px;display:flex;justify-content:space-between}
+.stats-h span{font:700 10px/1.4 var(--cond);letter-spacing:.2em;color:var(--yel)}
+.stats dl{display:grid;grid-template-columns:1fr 1fr;gap:0 18px;margin:0;padding:8px 12px 6px}
+.stats dl div{display:flex;gap:6px;align-items:baseline;font:600 12.5px/1.75 var(--cond);text-transform:uppercase;letter-spacing:.06em}
+.stats dt{color:var(--ink2)}
+.stats dl div i{flex:1;border-bottom:2px dotted #b9ae96;transform:translateY(-4px)}
+.stats dd{margin:0;font-weight:700}
+.swatches{display:flex;gap:8px;padding:0 12px 10px;font:600 11px/1 var(--cond);letter-spacing:.08em;text-transform:uppercase;align-items:center;flex-wrap:wrap}
+.swatches span{display:flex;align-items:center;gap:5px}
+.swatches i{width:16px;height:16px;border:2px solid var(--ink);display:inline-block}
+.bio-nav{display:flex;justify-content:space-between;align-items:center;margin-top:14px}
+.bio-nav span{font:400 14px/1 var(--head)}
+.tabs{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+.tabs button{border:2px solid var(--ink);background:var(--paper);padding:5px 8px 4px;font:700 11px/1 var(--cond);letter-spacing:.1em;text-transform:uppercase}
+.tabs button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.tabs button:hover{background:var(--yel);color:var(--ink)}
+.grouph{font:400 17px/1.1 var(--head);margin:4px 0 10px;transform:skewX(-9deg);transform-origin:0 100%}
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}
+.cell{border:2px solid var(--ink);background:var(--ink);padding:0;display:block;text-align:center;position:relative}
+.cell canvas{width:100%;height:auto}
+.cell span{display:block;background:var(--paper);font:700 10px/1.1 var(--cond);letter-spacing:.06em;text-transform:uppercase;padding:4px 2px 3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cell[aria-current="true"]{outline:3px solid var(--red);outline-offset:1px}
+.cell[aria-current="true"] span{background:var(--red);color:#fff}
+.cell:hover span{background:var(--yel)}
+.cwrow{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:8px 0;font:700 10.5px/1 var(--cond);letter-spacing:.18em;text-transform:uppercase}
+.cwrow button{border:2px solid var(--ink);background:#fff;padding:5px 9px 4px;font:700 11px/1 var(--cond);letter-spacing:.06em;box-shadow:2px 2px 0 var(--ink)}
+.cwrow button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+
+/* character select page */
+.selwrap{position:relative}
+#dm-select-slot{min-height:200px}
+#selWrap .dms-title{display:none}
+body.book-mode #selWrap > #dm-select-slot{max-height:478px;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin}
+.selbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 8px}
+.selbar span{font:700 10.5px/1.3 var(--cond);letter-spacing:.12em;text-transform:uppercase;color:var(--ink2)}
+body.phone-mode .selbar span{display:none}
+.foldout{position:fixed;inset:0;z-index:150;background:rgba(27,23,18,.82);display:none;padding:56px 16px 16px;overflow:auto}
+.foldout.open{display:block}
+.foldout .fo-inner{max-width:1200px;margin:0 auto;background:var(--paper);border:3px solid var(--ink);box-shadow:8px 8px 0 #000;padding:16px;position:relative}
+.foldout .fo-close{position:fixed;top:12px;right:16px;z-index:151}
+
+/* secret codes + roster entries */
+.code-list{list-style:none;margin:0 0 8px;padding:0;display:grid;gap:5px}
+.code-list li{border-left:6px solid var(--blue);padding:1px 0 1px 10px;font-size:12px;line-height:1.45}
+.code-list b{display:block;font:400 13.5px/1.25 var(--head)}
+.rentry{display:grid;grid-template-columns:62px 1fr;gap:10px;align-items:start;padding:6px 0 5px;border-bottom:1px solid #cdbfa3}
+.rentry canvas{width:62px;height:68px;border:2px solid var(--ink);background:var(--ink)}
+.rn{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.rn b{font:400 15px/1.1 var(--head);transform:skewX(-8deg);transform-origin:0 100%;display:inline-block}
+.rn span{font:700 10px/1.2 var(--cond);letter-spacing:.14em;text-transform:uppercase;color:var(--red);white-space:nowrap}
+.rnote{margin:2px 0 2px;font:12px/1.35 var(--cond);letter-spacing:.01em}
+.rrec{margin:0;font:9.4px/1.35 var(--mono);color:#26324a;overflow-wrap:anywhere}
+.rgh{font:400 15px/1.1 var(--head);margin:8px 0 2px;padding:5px 9px 4px;background:var(--ink);color:var(--paper);transform:skewX(-8deg);transform-origin:0 100%;display:inline-block}
+.rgh:first-child{margin-top:0}
+.jumps{display:flex;flex-wrap:wrap;gap:5px;margin:10px 0}
+.jumps button{border:2px solid var(--ink);background:var(--paper);padding:5px 8px 4px;font:700 11px/1 var(--cond);letter-spacing:.06em;text-transform:uppercase;box-shadow:2px 2px 0 var(--ink)}
+.jumps button:hover{background:var(--yel)}
+.rfoot{margin-top:10px;font:700 11px/1.4 var(--cond);letter-spacing:.14em;text-transform:uppercase;color:var(--ink2)}
+
+/* stages */
+.stagebtns{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:12px}
+.stagebtns button{border:2px solid var(--ink);background:var(--paper);padding:7px 4px 6px;font:700 10.5px/1.15 var(--cond);letter-spacing:.06em;text-transform:uppercase;box-shadow:2px 2px 0 var(--ink);border-top:7px solid var(--acc,#000)}
+.stagebtns button b{display:block;font:400 15px/1 var(--head)}
+.stagebtns button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.legend{width:100%;border-collapse:collapse;margin-top:10px;font:600 12.5px/1.3 var(--cond)}
+.legend th{text-align:left;font:700 10.5px/1 var(--cond);letter-spacing:.18em;text-transform:uppercase;border-bottom:3px solid var(--ink);padding:5px 4px}
+.legend td{border-bottom:1px solid #c9bea5;padding:6px 4px;text-transform:uppercase;letter-spacing:.05em}
+.legend td i{display:inline-block;width:14px;height:14px;border:2px solid var(--ink);vertical-align:-2px;margin-right:7px}
+.who{margin-top:10px;font:600 12px/1.5 var(--cond);letter-spacing:.05em;text-transform:uppercase;color:var(--ink2)}
+.castrow{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:6px}
+.dialect{display:flex;justify-content:space-between;align-items:flex-end;margin-top:22px;border-top:4px solid var(--ink);padding-top:10px;gap:12px}
+.dialect b{display:block;font:700 11px/1 var(--cond);letter-spacing:.24em;text-transform:uppercase;color:var(--red)}
+.dialect span{display:block;font:400 26px/1.1 var(--head);transform:skewX(-9deg);transform-origin:0 100%;margin:6px 0 4px}
+.dialect small{font:italic 12px/1.4 var(--serif);color:var(--ink2)}
+.dialect em{font:400 150px/.8 var(--head);font-style:normal;color:transparent;-webkit-text-stroke:3px var(--ink);
+  background:radial-gradient(var(--red) 1.6px,transparent 2px) 0 0/7px 7px;-webkit-background-clip:text;background-clip:text;transform:skewX(-9deg)}
+.fineprint{position:absolute;left:42px;right:42px;bottom:46px;font:11px/1.45 var(--cond);letter-spacing:.02em;color:var(--ink2);border-top:1px solid #bfb398;padding-top:7px;margin:0}
+body.phone-mode .fineprint{position:static;margin-top:16px}
+/* tips */
+.tip{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;border-bottom:2px dashed #b9ae96;padding:6px 0}
+.tip:last-child{border-bottom:0}
+.tip em{display:inline-block;background:var(--red);color:#fff;font:400 11px/1 var(--head);padding:4px 7px 3px;transform:skewX(-10deg);letter-spacing:.06em;font-style:normal}
+.tip q{display:block;font:italic 13.5px/1.38 var(--serif);margin:4px 0 2px;quotes:"\201C" "\201D"}
+.tip small{font:700 10.5px/1.2 var(--cond);letter-spacing:.12em;text-transform:uppercase;color:var(--ink2)}
+.tip .plate{width:66px}
+
+/* hint line (fallback inside the select slot) */
+.forge{display:flex;gap:8px;margin:10px 0 12px}
+.forge input{flex:1;min-width:0;border:3px solid var(--ink);background:#fff;padding:9px 10px;font:600 16px/1 var(--cond);letter-spacing:.06em;text-transform:uppercase}
+.feed{position:relative;padding:0 26px;background:
+  radial-gradient(circle at 12px 14px,#cdbf9f 4.5px,transparent 5px) 0 0/26px 28px repeat-y,
+  radial-gradient(circle at 14px 14px,#cdbf9f 4.5px,transparent 5px) 100% 0/26px 28px repeat-y,
+  repeating-linear-gradient(180deg,#fbfbf3 0 28px,#dcefdc 28px 56px);border-left:1px dashed #b5a988;border-right:1px dashed #b5a988;min-height:250px}
+.feed::before,.feed::after{content:"";position:absolute;top:0;bottom:0;width:1px;border-left:1px dashed #c9bd9c}
+.feed::before{left:25px}.feed::after{right:25px}
+.printout{padding:14px 10px 12px;display:flex;gap:14px;align-items:flex-start}
+.printout .plate{width:150px;flex:none}
+.pr-lines{font:700 12.5px/1.75 var(--mono);text-transform:uppercase;letter-spacing:.04em;color:#26324a;min-width:0}
+.pr-lines div{overflow-wrap:anywhere}
+.pr-lines .rc span{display:inline-block;margin-right:10px}
+.tries{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:12px;font:700 11px/1 var(--cond);letter-spacing:.16em;text-transform:uppercase}
+.tries button{border:2px solid var(--ink);background:#fff;padding:5px 9px 4px;font:700 11.5px/1 var(--cond);letter-spacing:.08em;text-transform:uppercase;box-shadow:2px 2px 0 var(--ink)}
+.tries button:hover{background:var(--yel)}
+.pr-lines .big{font:400 22px/1.1 var(--head);color:var(--ink);text-transform:uppercase;margin-bottom:6px;overflow-wrap:anywhere}
+.head{position:absolute;left:20px;right:20px;height:10px;top:0;background:linear-gradient(#3a3a3a,#111);border-radius:3px;opacity:0;z-index:3;box-shadow:0 2px 0 rgba(0,0,0,.2)}
+
+/* making of, rules, numbers */
+.phases{list-style:none;padding:0;margin:0}
+.phases li{display:grid;grid-template-columns:34px 1fr;gap:8px;padding:4px 0;border-bottom:1px solid #cbbfa5}
+.phases b.n{font:400 20px/1 var(--head);color:var(--blue)}
+.phases h4{margin:0;font:700 13px/1.2 var(--cond);letter-spacing:.12em;text-transform:uppercase}
+.phases p{margin:1px 0 0;font-size:11.2px;line-height:1.4}
+.rules{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+.rules li{border-left:6px solid var(--red);padding:2px 0 2px 10px}
+.rules b{display:block;font:400 14px/1.2 var(--head)}
+.rules span{font-size:12px;line-height:1.45}
+.numbers{margin-top:12px;border:3px solid var(--ink)}
+.numbers table{width:100%;border-collapse:collapse}
+.numbers td{padding:3px 10px;border-top:1px solid #cbbfa5;font:600 12.5px/1.3 var(--cond);letter-spacing:.06em;text-transform:uppercase}
+.numbers td:first-child{font:400 17px/1 var(--head);color:var(--red);width:112px;text-align:right;white-space:nowrap}
+
+/* process */
+.chap{display:flex;align-items:flex-end;gap:12px;margin:0 0 12px;border-bottom:5px solid var(--ink);padding-bottom:6px}
+.chap span{font:700 11px/1 var(--cond);letter-spacing:.26em;color:var(--red);white-space:nowrap;padding-bottom:4px}
+.chap h2{margin:0;font:400 26px/1 var(--head);transform:skewX(-10deg);transform-origin:0 100%}
+.chap.cont h2{font-size:17px;color:var(--ink2)}
+.director{position:relative;margin:10px 0 12px;padding:10px 14px 10px 16px;background:rgba(255,255,255,.55);border:2px solid var(--ink);border-left:8px solid var(--red);font:italic 14px/1.45 var(--serif)}
+.director::before{content:"THE DIRECTOR";display:block;font:700 9.5px/1 var(--cond);letter-spacing:.26em;color:var(--red);font-style:normal;margin-bottom:5px}
+.fig{margin:8px 0 10px}
+.fig button{display:block;width:100%;padding:0;border:3px solid var(--ink);background:var(--ink);box-shadow:4px 4px 0 rgba(27,23,18,.25);cursor:zoom-in;position:relative}
+.fig img{display:block;width:100%;height:var(--fh,200px);object-fit:cover;object-position:top center}
+.fig button::after{content:"TAP TO ENLARGE";position:absolute;right:6px;bottom:6px;background:var(--yel);color:var(--ink);border:2px solid var(--ink);font:700 9px/1 var(--cond);letter-spacing:.16em;padding:3px 5px 2px}
+.fig figcaption{font:11px/1.45 var(--cond);letter-spacing:.01em;color:var(--ink2);margin-top:6px}
+.fig figcaption b{color:var(--ink)}
+.rooms5{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px}
+.rooms5 figure{margin:0}
+.rooms5 .rtag{display:flex;justify-content:space-between;gap:6px;font:700 10px/1.2 var(--cond);letter-spacing:.1em;text-transform:uppercase;margin-bottom:3px}
+.rooms5 .rtag b{font:400 12px/1.1 var(--head);letter-spacing:0;text-transform:none}
+.rooms5 .rtag span{color:var(--red)}
+.rooms5 img{--fh:auto;height:auto;image-rendering:pixelated}
+.rooms5 .fig{margin:0}
+.rooms5 figcaption{font-size:10.5px;line-height:1.35}
+.rooms5 > .note{align-self:start}
+.chlist{list-style:none;padding:0;margin:10px 0 0;display:grid;gap:4px}
+.chlist button{display:flex;gap:10px;align-items:baseline;width:100%;border:0;border-bottom:1px solid #cbbfa5;background:none;padding:4px 2px;text-align:left;font:600 14px/1.2 var(--cond);letter-spacing:.04em;text-transform:uppercase}
+.chlist button b{font:400 14px/1 var(--head);color:var(--red);width:28px}
+.chlist button:hover{background:var(--yel)}
+.linkish{border:0;background:none;padding:0;color:var(--blue);text-decoration:underline;font:inherit;cursor:pointer}
+.rooms5 .fig button::after{display:none}
+.lineup canvas,#crewRow,#formRow{image-rendering:auto}
+
+/* code */
+.files{width:100%;border-collapse:collapse;margin:8px 0 10px}
+.files td{border-top:2px solid var(--ink);padding:5px 4px;vertical-align:top;font-size:11.4px;line-height:1.42}
+.files td:first-child{font:700 11.5px/1.3 var(--mono);white-space:nowrap;color:var(--blue)}
+.steps{margin:0;padding-left:22px}
+.steps li{margin:0 0 5px;font-size:11.8px;line-height:1.45}
+.dl{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 8px}
+.dl button{border:2px solid var(--ink);background:var(--yel);padding:7px 10px 6px;font:700 11.5px/1 var(--mono);box-shadow:3px 3px 0 var(--ink)}
+.dl button.alt{background:var(--paper)}
+.dl button.nu{background:#fff;position:relative}
+.dl button.nu::after{content:"NEW";position:absolute;right:-6px;top:-8px;background:var(--red);color:#fff;font:700 8px/1 var(--cond);letter-spacing:.12em;padding:2px 3px 1px;border:1.5px solid var(--ink)}
+.listing.tight pre{font-size:10px;line-height:1.38;background:repeating-linear-gradient(180deg,#fff 0 13.8px,#f2f6ff 13.8px 27.6px)}
+.dl button:hover{background:#fff}
+.codestats{font:700 12px/1.4 var(--cond);letter-spacing:.08em;text-transform:uppercase;color:var(--blue);margin:2px 0 4px}
+.listing{background:#fff;border:3px solid var(--ink);box-shadow:4px 4px 0 rgba(27,23,18,.25);margin:8px 0}
+.listing .lh{display:flex;justify-content:space-between;align-items:center;background:var(--blue);color:#fff;padding:5px 8px 5px 10px;font:700 11px/1 var(--cond);letter-spacing:.18em;text-transform:uppercase}
+.listing .lh button{border:2px solid #fff;background:transparent;color:#fff;padding:4px 8px;font:700 10.5px/1 var(--cond);letter-spacing:.14em;text-transform:uppercase}
+.listing pre{margin:0;padding:8px 10px;font:10.6px/1.5 var(--mono);white-space:pre-wrap;color:#1a2b4f;background:repeating-linear-gradient(180deg,#fff 0 15.9px,#f2f6ff 15.9px 31.8px);overflow-wrap:anywhere}
+.schema{width:100%;border-collapse:collapse;margin:8px 0 6px;font-size:10.6px}
+.schema th{text-align:left;font:700 10px/1 var(--cond);letter-spacing:.18em;text-transform:uppercase;border-bottom:3px solid var(--ink);padding:4px 4px}
+.schema td{border-bottom:1px solid #cbbfa5;padding:4px 4px;vertical-align:top;font:10.2px/1.38 var(--mono)}
+.schema td:first-child{font-weight:700;color:var(--blue);white-space:nowrap}
+.schema td:nth-child(2){text-align:right;font-weight:700}
+.note{border:2px dashed var(--ink);background:rgba(46,139,87,.1);padding:8px 11px;margin:10px 0;font:12px/1.45 var(--cond)}
+.note b{font:400 12.5px/1.2 var(--head);display:block;margin-bottom:2px}
+.plain{margin:0 0 8px;padding-left:18px}
+.plain li{margin:0 0 6px;font-size:12px;line-height:1.45}
+
+/* warranty, notes, back */
+.warranty{border:3px double var(--ink);border-width:6px;padding:14px 16px;background:rgba(255,255,255,.3)}
+.warranty h3{margin:0 0 4px;font:400 22px/1 var(--head);text-align:center;transform:skewX(-8deg)}
+.warranty .fine{font:13px/1.5 var(--cond);letter-spacing:.01em}
+.warranty h4{margin:10px 0 4px;font:700 12px/1 var(--cond);letter-spacing:.2em;text-transform:uppercase;color:var(--red)}
+.warranty ul{margin:0;padding-left:18px;font:13px/1.5 var(--cond)}
+.coupon{margin-top:20px;border:2px dashed var(--ink);padding:12px 14px;position:relative;display:flex;gap:14px;align-items:center;background:rgba(255,207,31,.18)}
+.coupon::before{content:"CUT ALONG THE DOTTED LINE";position:absolute;top:-10px;left:14px;background:var(--paper);padding:0 6px;font:700 10px/1.4 var(--cond);letter-spacing:.2em}
+.coupon svg{width:74px;height:74px;flex:none}
+.coupon b{display:block;font:400 15px/1.1 var(--head)}
+.coupon span{font:12.5px/1.45 var(--cond)}
+.partsbin{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}
+.partsbin div{border:2px solid var(--ink);background:#fff;padding:6px 8px;display:flex;justify-content:space-between;align-items:baseline;font:700 12px/1 var(--cond);letter-spacing:.1em;text-transform:uppercase}
+.partsbin b{font:400 18px/1 var(--head);color:var(--blue)}
+.starring{margin-top:8px}
+.starring .row{display:grid;grid-template-columns:repeat(9,1fr);gap:4px;margin-top:4px}
+.starring .row .plate{border-width:2px}
+.lined{background-image:repeating-linear-gradient(180deg,transparent 0 31px,#9fb7d8 31px 32px);background-position:0 6px;min-height:400px;position:relative;border-left:2px solid rgba(225,37,27,.55);padding-left:12px}
+.lined a,.lined div,.lined button{display:flex;gap:8px;align-items:baseline;font:600 14px/32px var(--cond);letter-spacing:.04em;text-decoration:none;color:var(--ink);text-transform:uppercase;width:100%;border:0;background:none;padding:0;text-align:left}
+.lined a i,.lined button i{flex:1;border-bottom:2px dotted var(--faint);transform:translateY(-8px)}
+.lined a b,.lined button b{color:var(--blue);font-weight:700;text-transform:none;letter-spacing:0}
+.lined a:hover b,.lined button:hover b{color:var(--red)}
+.page.back{background-color:#F0E7CF}
+.bk-top{background:var(--red);color:#fff;margin:-36px -42px 12px;padding:18px 42px 12px;border-bottom:5px solid var(--ink)}
+.bk-top b{display:block;font:400 28px/1 var(--head);transform:skewX(-10deg);transform-origin:0 100%}
+.bk-top span{font:italic 13px/1.4 var(--serif)}
+.bk-feats{list-style:none;margin:0 0 10px;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:2px 14px}
+.bk-feats li{font:700 11.5px/1.25 var(--cond);letter-spacing:.06em;text-transform:uppercase;display:flex;gap:7px;align-items:baseline}
+.bk-feats li b{font:400 17px/1 var(--head);color:var(--blue);white-space:nowrap}
+.bk-foot{display:flex;justify-content:space-between;align-items:flex-end;margin-top:10px;gap:16px}
+.barcode{flex:none;width:130px;height:64px;background:#fff;border:2px solid var(--ink);padding:6px 6px 14px;position:relative}
+.barcode::after{content:"0 12921 35180 5";position:absolute;bottom:2px;left:0;right:0;text-align:center;font:9px/1 var(--mono);letter-spacing:.18em}
+
+/* lightbox */
+dialog.lightbox{border:3px solid var(--ink);padding:0;background:var(--paper);max-width:min(96vw,1500px);max-height:94vh;box-shadow:10px 10px 0 #000}
+dialog.lightbox::backdrop{background:rgba(20,16,10,.82)}
+.lb-bar{position:sticky;top:0;display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--ink);color:var(--paper);padding:8px 10px 8px 14px;font:700 11px/1.3 var(--cond);letter-spacing:.14em;text-transform:uppercase;z-index:2}
+.lb-bar button{border:2px solid var(--paper);background:var(--red);color:#fff;padding:5px 10px;font:700 12px/1 var(--cond);letter-spacing:.14em}
+dialog.lightbox img{display:block;max-width:100%;height:auto}
+dialog.lightbox p{margin:0;padding:10px 14px 14px;font:13px/1.5 var(--cond);max-width:900px}
+
+/* ---------- column: phone and "one page" ---------- */
+#column{display:none}
+body.phone-mode #column{display:flex;flex-direction:column;gap:16px;padding:66px 10px 40px}
+body.phone-mode.onepage #column{max-width:700px;margin:0 auto;padding-left:16px;padding-right:16px}
+body.phone-mode #desk,body.phone-mode .ctl{display:none}
+body.phone-mode .page{width:100%;height:auto;min-height:0;padding:30px 20px 50px;box-shadow:0 6px 18px rgba(60,45,20,.28);scroll-margin-top:64px}
+body.phone-mode .page.cover{height:auto;min-height:0;padding:0;display:flex;flex-direction:column}
+body.phone-mode .cv-band{position:relative;flex:none}
+body.phone-mode .cv-logo{position:relative;left:auto;right:auto;top:auto;margin:10px 30px 0}
+body.phone-mode .cv-cast{position:relative;left:auto;top:auto;width:100%;height:auto;margin-top:-24px}
+body.phone-mode .cv-band{font-size:10px;letter-spacing:.12em;padding:0 12px;height:auto;min-height:38px}
+body.phone-mode .cv-band span:first-child{display:none}
+body.phone-mode .cv-band{justify-content:center}
+body.phone-mode .cv-seal{top:-30px;right:8px;width:80px;height:80px}
+body.phone-mode .cv-title{position:relative;height:auto;padding:16px 96px 16px 18px}
+body.phone-mode .cv-title em{position:static;display:block;text-align:left;margin-top:10px}
+body.phone-mode .dogear,body.phone-mode .staple{display:none}
+body.phone-mode .bk-top{margin:-30px -20px 16px;padding:22px 20px 16px}
+body.phone-mode .fig img{height:auto;object-fit:contain}
+body.phone-mode .fig button::after{content:"ENLARGE"}
+body.phone-mode .rgh{transform:none}
+body.phone-mode .page{font-size:14.5px;line-height:1.6}
+body.phone-mode .dense{font-size:14px}
+body.phone-mode .small{font-size:12.5px}
+body.phone-mode .phases p,body.phone-mode .how4 p,body.phone-mode .feat p,body.phone-mode .rules span,body.phone-mode .steps li,body.phone-mode .files td,body.phone-mode .plain li,body.phone-mode .code-list li{font-size:13.5px}
+body.phone-mode .fig figcaption{font-size:12.5px}
+body.phone-mode .rnote{font-size:13.5px}
+body.phone-mode .rrec{font-size:10.5px}
+body.phone-mode .listing pre{font-size:11.5px}
+body.phone-mode .schema td{font-size:11px}
+body.phone-mode .page.roster-cont .folio{display:none}
+@media (max-width:899px){
+  .top{padding:0 10px;gap:8px;justify-content:space-between}
+  .brand .mini{width:48px;height:34px}
+  .brand b{font-size:13px}
+  .where,.cwpick,#viewBtn{display:none}
+  .sheet{right:10px;left:10px;width:auto}
+  .bio-row{flex-direction:column}
+  .bio-row .plate{width:100%;max-width:242px}
+  .bio-name{font-size:34px}
+  .grid{grid-template-columns:repeat(4,1fr)}
+  .stagebtns{grid-template-columns:repeat(3,1fr)}
+  .stats dl{grid-template-columns:1fr}
+  .how4{grid-template-columns:1fr}
+  .printout{flex-direction:column}
+  .printout .plate{width:160px}
+  .bk-feats{grid-template-columns:1fr}
+  .mascot .plate{width:110px}
+  .rooms5{grid-template-columns:1fr}
+  .starring .row{grid-template-columns:repeat(5,1fr)}
+  .chap h2{font-size:22px}
+  .files td:first-child{white-space:normal;overflow-wrap:anywhere}
+}
+@media (max-width:420px){
+  .band > span,.band > h2{font-size:19px;white-space:normal}
+  .grid{grid-template-columns:repeat(3,1fr)}
+  .castrow{grid-template-columns:repeat(3,1fr)}
+}
+/* og image mode */
+body.og .top,body.og .ctl,body.og .edgetabs{display:none}
+body.og #desk{top:0;bottom:0}
+</style>
+</head>
+<body>
+<a class="skip" href="#column" id="skipLink">Read it as one page (best for screen readers and search)</a>
+<header class="top">
+  <a class="brand" href="#cover" id="brandLink" aria-label="Back to the cover"><span class="mini" id="miniLogo"></span><span><b>THE DREAM MACHINE</b><small>INSTRUCTION BOOKLET</small></span></a>
+  <div class="where" id="where" aria-hidden="true">Cover</div>
+  <label class="cwpick">Colorway <select class="tbtn" id="cwSel" aria-label="Colorway"></select></label>
+  <button class="tbtn" id="viewBtn" aria-pressed="false" title="Show every page in one scrolling column">One page</button>
+  <button class="tbtn" id="tocBtn" aria-expanded="false" aria-controls="sheet">Contents</button>
+</header>
+<nav class="sheet" id="sheet" aria-label="Contents"></nav>
+<main id="desk" aria-label="Instruction booklet"><div id="bookWrap"><div id="book"><div class="stack L"></div><div class="stack R"></div><div class="edgetabs" id="edgeTabs" aria-label="Chapter tabs"></div></div></div></main>
+<div id="column" tabindex="-1"></div>
+<nav class="ctl" aria-label="Turn pages">
+  <button class="turn" id="prev" aria-label="Previous page">&#9664;</button>
+  <div class="scrub"><label class="sr" for="scrub">Jump to a spread</label><input type="range" id="scrub" min="0" max="1" value="0" step="1"><div class="pagelabel" id="pageLabel">Cover</div></div>
+  <button class="turn" id="next" aria-label="Next page">&#9654;</button>
+</nav>
+<div class="foldout" id="foldout" role="dialog" aria-modal="true" aria-label="Character select, unfolded"><button class="tbtn fo-close" id="foldClose">Fold it back</button><div class="fo-inner" id="foldInner"></div></div>
+<dialog class="lightbox" id="lightbox" aria-label="Screenshot, full size"><div class="lb-bar"><span id="lbTitle"></span><button id="lbClose">Close</button></div><img id="lbImg" alt=""><p id="lbCap"></p></dialog>
+<div class="sr" aria-live="polite" id="live"></div>
+<noscript><p>This booklet draws its characters live with JavaScript. Turn JavaScript on to read it.</p></noscript>
+
+<!--@KIT-->
+<!--@GSAP-->
+<!--@PART site/manual-images site/manual-images-ed2 dm-rooms2 dm-select-->
+<script>
+(() => {
+"use strict";
+// Second edition: the bigger rooms (1280 x 720) everywhere a room is drawn live.
+DM.useRooms(DM_ROOMS2);
+const C = DM.content;
+const IMG = window.DM_MANUAL_IMG || {};
+const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const PW = 540, PH = 740;
+const Q = new URLSearchParams(location.search);
+const OG = Q.has("og");
+const mqPhone = matchMedia("(max-width: 899px)");
+const hasGsap = typeof gsap !== "undefined";
+let onePage = Q.get("view") === "onepage" || (Q.get("view") !== "book" && (() => { try { return localStorage.getItem("dm-manual-view") === "onepage"; } catch (e) { return false; } })());
+if (OG) { onePage = false; document.body.classList.add("og"); }
+
+/* ---------- static and animated character thumbnails ---------- */
+const statics = [];
+function paintStatic(s){
+  const { cv, who, scale, foot } = s; const ctx = cv.getContext("2d");
+  ctx.imageSmoothingEnabled = false; ctx.clearRect(0, 0, cv.width, cv.height);
+  DM.stage(ctx, cv.width, cv.height); DM.draw(ctx, cv.width / 2, foot, scale, who, 1000);
+}
+function staticThumb(cv, who, scale = 2, foot){ const s = { cv, who, scale, foot: foot ?? cv.height - 6 }; statics.push(s); paintStatic(s); return s; }
+
+/* ---------- small builders ---------- */
+const DASH = new RegExp("\\s*[\\u2014\\u2013]\\s*", "g");
+const cleanLabel = l => String(l).replace(DASH, ": ");
+const cleanText = s => String(s ?? "").replace(DASH, ", ");
+const PUBLIC = DM.keys();
+const GROUPS = DM.groups.filter(g => g.key !== "dev");
+const DEV = (DM.groups.find(g => g.key === "dev") || { keys: [] }).keys;
+const LIVE_LABEL = Object.fromEntries(ROSTER_GROUPS.map(([k, l]) => [k, cleanLabel(l)]));
+const SHORT = { crew: "Crew", house: "House", anime: "Anime" };
+const shortLabel = g => SHORT[g.key] || g.key.replace("batch-", "Batch ");
+function fig(name, alt, cap, h){
+  const im = IMG[name] || { src: "", w: 4, h: 3 };
+  const fh = Math.min(h || 200, Math.round(450 * im.h / im.w));
+  return `<figure class="fig" style="--fh:${fh}px"><button type="button" data-lb="${name}" aria-label="Enlarge: ${esc(alt)}"><img src="${im.src}" alt="${esc(alt)}" width="${im.w}" height="${im.h}" decoding="async"></button><figcaption>${cap}</figcaption></figure>`;
+}
+function chap(n, title, cont){ return `<div class="chap${cont ? " cont" : ""}"><span>CHAPTER ${n}</span><h2>${title}${cont ? ", continued" : ""}</h2></div>`; }
+const director = q => `<blockquote class="director">${q}</blockquote>`;
+const goBtn = (label, id, cls = "") => `<button type="button" class="btnp ${cls}" data-goto="${id}">${label}</button>`;
+
+function sealSvg(id = "sealArc"){
+  const pts = []; for (let i = 0; i < 56; i++) { const a = i / 56 * Math.PI * 2, r = i % 2 ? 53 : 59; pts.push((60 + Math.cos(a) * r).toFixed(1) + "," + (60 + Math.sin(a) * r).toFixed(1)); }
+  return `<svg viewBox="0 0 120 120" role="img" aria-label="Official Dream Machine seal of weirdness: 129 characters, compiled not drawn"><defs><path id="${id}" d="M60,60 m-40,0 a40,40 0 1,1 80,0 a40,40 0 1,1 -80,0"/></defs>
+  <polygon points="${pts.join(" ")}" fill="#FFCF1F" stroke="#1B1712" stroke-width="2.5"/>
+  <circle cx="60" cy="60" r="49" fill="#E1251B" stroke="#1B1712" stroke-width="2"/>
+  <text font-family="Archivo Narrow,Arial Narrow,sans-serif" font-weight="700" font-size="9" letter-spacing="1.4" fill="#F4EEDC"><textPath href="#${id}">OFFICIAL DREAM MACHINE · SEAL OF WEIRDNESS ·</textPath></text>
+  <circle cx="60" cy="60" r="30" fill="#F4EEDC" stroke="#1B1712" stroke-width="2"/>
+  <text x="60" y="63" text-anchor="middle" font-family="Archivo Black,Arial Black,sans-serif" font-size="21" fill="#1B1712">129</text>
+  <text x="60" y="73" text-anchor="middle" font-family="Archivo Narrow,Arial Narrow,sans-serif" font-weight="700" font-size="6.6" letter-spacing=".6" fill="#1B1712">COMPILED</text>
+  <text x="60" y="80.5" text-anchor="middle" font-family="Archivo Narrow,Arial Narrow,sans-serif" font-weight="700" font-size="6.6" letter-spacing=".6" fill="#1B1712">NOT DRAWN</text></svg>`;
+}
+function padSvg(){
+  const ink = "#1B1712";
+  return `<svg class="pad" viewBox="0 0 456 236" role="img" aria-label="A game controller: 1 Sense is the direction pad, 2 Compile is select, 3 Draw is B, 4 Gate is A">
+  <g font-family="Archivo Black,Arial Black,sans-serif" font-size="13" fill="${ink}">
+    <polyline points="110,62 110,30 62,30" fill="none" stroke="${ink}" stroke-width="2"/><text x="10" y="35">1 SENSE</text>
+    <polyline points="256,150 256,214 150,214" fill="none" stroke="${ink}" stroke-width="2"/><text x="66" y="219">2 COMPILE</text>
+    <polyline points="318,168 318,214 360,214" fill="none" stroke="${ink}" stroke-width="2"/><text x="366" y="219">3 DRAW</text>
+    <polyline points="370,62 370,30 392,30" fill="none" stroke="${ink}" stroke-width="2"/><text x="398" y="35">4 GATE</text>
+  </g>
+  <rect x="40" y="52" width="376" height="128" rx="16" fill="#D8D1C1" stroke="${ink}" stroke-width="3"/>
+  <rect x="54" y="66" width="348" height="100" rx="8" fill="#2A2724"/>
+  <rect x="166" y="78" width="74" height="76" rx="6" fill="#4A4540"/>
+  <g fill="${ink}" stroke="#6b645a" stroke-width="1.5"><rect x="98" y="80" width="24" height="72" rx="3"/><rect x="74" y="104" width="72" height="24" rx="3"/></g>
+  <circle cx="110" cy="116" r="6" fill="#3b3631"/>
+  <rect x="178" y="128" width="22" height="9" rx="4.5" fill="#8b847a"/><rect x="206" y="128" width="22" height="9" rx="4.5" fill="#8b847a"/>
+  <text x="189" y="149" text-anchor="middle" font-family="Archivo Narrow,sans-serif" font-weight="700" font-size="7" fill="#E1251B">SELECT</text>
+  <text x="217" y="149" text-anchor="middle" font-family="Archivo Narrow,sans-serif" font-weight="700" font-size="7" fill="#E1251B">START</text>
+  <text x="203" y="102" text-anchor="middle" font-family="Archivo Black,sans-serif" font-size="9" fill="#D8D1C1">DREAM</text>
+  <text x="203" y="113" text-anchor="middle" font-family="Archivo Black,sans-serif" font-size="9" fill="#D8D1C1">MACHINE</text>
+  <circle cx="318" cy="128" r="18" fill="#E1251B" stroke="${ink}" stroke-width="3"/><circle cx="370" cy="110" r="18" fill="#E1251B" stroke="${ink}" stroke-width="3"/>
+  <text x="318" y="160" text-anchor="middle" font-family="Archivo Black,sans-serif" font-size="11" fill="#D8D1C1">B</text>
+  <text x="370" y="142" text-anchor="middle" font-family="Archivo Black,sans-serif" font-size="11" fill="#D8D1C1">A</text>
+  <g font-family="Archivo Black,sans-serif" font-size="12" text-anchor="middle">
+    ${[[110, 70, 1], [256, 148, 2], [318, 160, 3], [370, 76, 4]].map(([x, y, n]) => `<circle cx="${x}" cy="${y - 8}" r="10" fill="#FFCF1F" stroke="${ink}" stroke-width="2"/><text x="${x}" y="${y - 4}" fill="${ink}">${n}</text>`).join("")}
+  </g></svg>`;
+}
+
+/* ---------- copy taken from the four live pages (em dashes removed, facts kept) ---------- */
+const HOW = [
+  ["Sense", "01 · sense", "A read-only Python bridge exposes session state (threads, activity) as JSON on localhost. It never writes anything."],
+  ["Compile", "02 · compile", "Each agent name becomes Character DNA: an exact recipe match if it's one of the 129, else a deterministic build hashed from the name. Same name, same guy, forever."],
+  ["Draw", "03 · draw", "The canvas engine renders each character from the parts library at 2px resolution: body, outfit, head, face, hat, prop, aura, animated per frame. No image assets."],
+  ["Gate", "04 · gate", "Changes ship through contract tests: static invariants, desktop + mobile Playwright suites, bridge unit tests, and live compile verification of every recipe."]
+];
+const FEATURES = [
+  ["Five rooms", "DM Main Floor, DM Pinball Row, DM Party Room, Signal Observatory, Agora Archive, each with its own 8-bit diorama, palette, and props. Rooms map to groups of chat threads; agents wander the room they belong to."],
+  ["Live states", "Working, needs-you, idle, ended, rendered as animation and posture, not just color. A character that needs attention <i>looks</i> like it needs attention."],
+  ["The 101", "Every named agent is a hand-designed formulation: Euclid is a square-headed geometer, Schrödinger is literally the cat, Jason is exactly who you think he is. 129 fixed recipes ship in the catalog."],
+  ["Persona Forge", "Type any name (a friend, a bot, a bit) and the machine compiles a deterministic character from it. Unknown names become \"glitchlings\" from the same parts library. Nobody is a default avatar."],
+  ["Room memory", "Rooms remember. Clear a room and its history is archived, restorable, and replayable: the memory view re-renders past scenes."],
+  ["Honest degradation", "Bridge offline? The UI says so, keeps your last good state, and recovers cleanly. No fake loading states, no silent staleness."]
+];
+const PHASES = [
+  ["0", "Phase 0 · The audit", "Full code review, contract tests wired with Playwright, regression gates established: every future change ships behind a failing test first, then a green one."],
+  ["1", "Phase 1 · The parts library", "Every body part redesigned in isolation review pages and approved piece by piece: 12 bodies (tiny at 70% scale, 50s-wind-up cyborg, blob vs slime...), 12 heads (the orb floats at 125% and drifts independently), 10 faces, 18 hats, 12 outfits, 8 shells, 30 props with motion, 18 auras (rain, shadow silhouettes, psychic waves), 15 chest motifs including a DNA helix for Rosalind Franklin."],
+  ["2", "Phase 2 · The rooms", "All five rooms rebuilt in 8-bit via three-option shootouts per room. Main Floor C, Pinball Row A, Party Room C, Signal Observatory A, Agora Archive C won."],
+  ["3", "Phase 3 · The model crew", "The house characters got bespoke designs: Sol (the Dream Machine itself: elf-sovereign head, token railgun, orbiting tokens), Flash, Sonnet, Opus, Astra. Elf Sovereign took \"rounded head, same ears, 50% bigger\" and became instantly the best-dressed thing in the building."],
+  ["4", "Phase 4 · The 101 Formulations", "101 fixed agent names, 101 hand-designed costumes matching each reference, reviewed in batches of 15 on isolated pages, approved with edits, then canonized behind regression gates. Palette sets had to stay unique across the whole catalog; by the final batch exactly <b>one</b> unused color combination remained. Ramanujan got it."]
+];
+const LABEL_MODES = [
+  ["Full tag", "Job icon and name over every head, tidied so tags never overlap. The first edition look."],
+  ["Job bubble", "A small job icon over each head. The name shows on hover, on the guy you picked and on anyone who needs you. The phone starts here."],
+  ["Floor nameplate", "A small icon over the head, and the name on a little plate at the feet."],
+  ["Numbered markers", "A small number over each head, matched to a list under the room."],
+  ["Smart", "Full tags for the guy you picked, anyone who needs you and busy workers when there is room. Everyone else gets the bubble. The desktop starts here."]
+];
+const NEW_LIST = [
+  ["Bigger rooms", "All five rooms rebuilt at 1280 by 720, up from 960 by 540, with 34 places to stand in each one. A full crew fits without stacking."],
+  ["More detail", "Thick ink outlines, real shading, a new outlined pixel font on every sign, and props with something to look at."],
+  ["The right games on the cabinets", "SFII, MKII, TMNT, X-Men and OutRun each play their own game. Pinball Row has JINX, DUNE, OOZE, YETI and ZAP!. One balloon in the Party Room is not a balloon."],
+  ["Labels that stay out of the way", "Five ways to label heads: full tag, job bubble, floor nameplate, numbered markers and smart. The phone starts on bubbles, the desktop on smart."],
+  ["Job cards", "Click a guy to see the job in plain words (research, build, test, design, red team) and what got done on each pass. It reads the logs the tools already write, so it costs no tokens."],
+  ["Claude Code joins the floor", "Claude Code sessions and their helpers walk in next to the Codex threads. Still read-only, still on your own machine."],
+  ["A phone cabinet", "The same rooms in an attract-mode cabinet on your phone, over your own private network."]
+];
+const ED2_ROOMS = [
+  ["forgeFloor", "DM Main Floor", "Second edition DM Main Floor: prize wall, five cabinets, token machine, prize pickup, lounge", "Cabinet row under the cloud sign, token machine, prize pickup, the lounge, and a prize wall that is now half candy."],
+  ["nullArcade", "DM Pinball Row", "Second edition DM Pinball Row: high scores, five pinball machines, ticket eater, exit, soda machines", "JINX, DUNE, OOZE, YETI and ZAP!, each with its own cabinet and playfield. High scores (SOL holds 3rd), ticket eater, soda."],
+  ["dmParty", "DM Party Room", "Second edition DM Party Room: pizza counter, party tables under a balloon arch, Ticket Eater 5000, prize shelf, ball pit", "Pizza counter, party tables under the balloon arch, Ticket Eater 5000, prize shelf, ball pit. One balloon is not a balloon."],
+  ["observatory", "Signal Observatory", "Second edition Signal Observatory: star map, antenna bank, anomaly tube, uplink, dark matter sofa", "Star map, antenna bank, the anomaly in its tube, the uplink. Still the quiet room."],
+  ["agoraArchive", "Agora Archive", "Second edition Agora Archive: scroll stacks, debate table, objection podium, glowing archive, philosopher pit", "Scroll stacks, the debate table, the objection podium, the glowing archive, the philosopher pit."]
+];
+const STATS = [["129", "fixed recipes"], ["12·12·10", "bodies · heads · faces"], ["18·12·8", "hats · outfits · shells"], ["30·18·15", "props · auras · motifs"], ["3", "colorways"], ["7", "formulation batches"], ["0", "console errors, ever, shipped"]];
+const DOCTRINE = [
+  ["Every pixel earns its place.", "If a part doesn't read at 2px resolution, it gets redesigned, not excused."],
+  ["The costume must match the reference.", "Plato gets the shadow of the cave. Wegener gets Greenland snow. If you know, you know, and if you don't, it still has to look cool."],
+  ["Palettes are a finite resource.", "Three color channels per character, sets unique across the catalog. Scarcity breeds taste."],
+  ["Nothing live until approved.", "Every visual change was reviewed on an isolated page first, then canonized with checkpoints you can roll back to."]
+];
+const QUOTES = {
+  rooms: "They still have an Atari feel. Better text, thicker outlines, more detail.",
+  labels: "Give me some options for the labels above the heads, they are taking up a bunch of space.",
+  cabs: "We need to do better on what is displayed on the cabinets vs the title. SF2 great, but Mortal Kombat has Space Invaders, Turtles is Pac-Man, X-Men is Mario and Dig Dug is racing.",
+  atari: "It looks half the fidelity of an 8-bit NES machine. A little too… Atari 2600 for me. I'm more of a NES/Master System kinda guy.",
+  bomber: "Blue Bomber, all day. Dark Sector is cool as hell but it gets edged out.",
+  longlegs: "Longlegs rules btw no fuckin notes there.",
+  dope: "What a dope fuckin name"
+};
+const CHAPTERS = [["01", "Where we started", "started"], ["02", "Picking a dialect", "dialect"], ["03", "The review loop", "loop"], ["04", "The model crew", "crew"], ["05", "The 101 formulations", "formulations"], ["06", "The rooms", "rooms"], ["07", "The first edition", "now"], ["08", "Bigger rooms", "bigger"]];
+const QUICKSTART = ["<" + "!-- minimal page -->",
+  "<canvas id=\"c\" width=\"240\" height=\"236\"></canvas>",
+  "<script src=\"persona-module.js\"><\/script>",
+  "<script src=\"persona-engine.js\"><\/script>",
+  "<script src=\"persona-live.js\"><\/script>",
+  "<script>",
+  "  const ctx = document.getElementById(\"c\").getContext(\"2d\");",
+  "  ctx.imageSmoothingEnabled = false;",
+  "  const dna = TeamLoopPersona.compile(\"Schrodinger\");   // or ANY name",
+  "  function frame(t){",
+  "    ctx.clearRect(0,0,240,236);",
+  "    const pal = paletteCW(\"voidArcade\", dna.colors[0], dna.colors[1], dna.colors[2]);",
+  "    DM_LIVE.drawCharacter(ctx, 120, 196, 4.2, dna, pal, t, 7);",
+  "    requestAnimationFrame(frame);",
+  "  }",
+  "  requestAnimationFrame(frame);",
+  "<\/script>"].join("\n");
+// Second edition: the room page. The starter file is this same program with the four scripts inlined.
+const ROOMQUICK = ["<canvas id=\"room\" width=\"1280\" height=\"720\"></canvas>",
+  "<script src=\"persona-module.js\"><\/script>",
+  "<script src=\"persona-engine.js\"><\/script>",
+  "<script src=\"persona-live.js\"><\/script>",
+  "<script src=\"dream-machine-rooms.js\"><\/script>",
+  "<script>",
+  "  const ctx = document.getElementById(\"room\").getContext(\"2d\");",
+  "  const CW = \"voidArcade\";  // or toxicCandy, spectralOxide",
+  "  const ROOMS = DM_ROOMS2.order;  // the five room keys",
+  "  let room = ROOMS[0];",
+  "  const names = [\"Sol\", \"Tesla\", \"Curie\", \"Jason\", \"Mark\"];  // any names",
+  "  const crew = names.map((n, i) => ({ dna: TeamLoopPersona.compile(n),",
+  "    seed: i, x: 640, y: 560, go: 0 }));",
+  "  // every place to stand in the room: work, think, attention, ...",
+  "  const spots = () => Object.values(DM_ROOMS2.defs[room].zones).flat();",
+  "  ctx.canvas.onclick = () => {  // click for the next room",
+  "    room = ROOMS[(ROOMS.indexOf(room) + 1) % ROOMS.length];",
+  "    crew.forEach(g => g.go = 0);",
+  "  };",
+  "  function frame(t){",
+  "    ctx.imageSmoothingEnabled = false;",
+  "    DM_ROOMS2.draw(ctx, room, CW, false, t);",
+  "    for (const g of crew) {",
+  "      if (t > g.go) {  // wander to a new spot every few seconds",
+  "        const s = spots();",
+  "        [g.tx, g.ty] = s[Math.floor(Math.random() * s.length)];",
+  "        g.go = t + 3000 + Math.random() * 5000;",
+  "      }",
+  "      g.x += (g.tx - g.x) * 0.04;",
+  "      g.y += (g.ty - g.y) * 0.04;",
+  "    }",
+  "    for (const g of [...crew].sort((a, b) => a.y - b.y)) {",
+  "      const [c1, c2, c3] = g.dna.colors;",
+  "      DM_LIVE.drawCharacter(ctx, Math.round(g.x), Math.round(g.y), 3,",
+  "        g.dna, paletteCW(CW, c1, c2, c3), t, g.seed);",
+  "    }",
+  "    requestAnimationFrame(frame);",
+  "  }",
+  "  requestAnimationFrame(frame);",
+  "<\/script>"].join("\n");
+const EXAMPLES = ["schrodinger: { body:\"round\", head:\"feline\", face:\"dots\", hat:\"none\",",
+  "  outfit:\"suit\", shell:\"none\", prop:\"none\", aura:\"probability\",",
+  "  motif:\"none\", colors:[\"mint\",\"cyan\",\"violet\"] }",
+  "  // he IS the cat. feline head + probability aura = the superposition.",
+  "",
+  "jason: { body:\"fighter\", head:\"round\", face:\"mask\", hat:\"none\",",
+  "  outfit:\"sports\", shell:\"none\", prop:\"sword\", aura:\"rain\",",
+  "  motif:\"scar\", colors:[\"steel\",\"rust\",\"cyan\"] }",
+  "  // the mask, the jersey, a legally-distinct machete, crystal lake rain.",
+  "",
+  "franklin: { body:\"round\", head:\"round\", face:\"dots\", hat:\"crystal\",",
+  "  outfit:\"coat\", shell:\"none\", prop:\"scroll\", aura:\"snow\",",
+  "  motif:\"helix\", colors:[\"bronze\",\"silver\",\"cyan\"] }",
+  "  // rosalind franklin: the helix motif was BUILT for her. photograph 51."].join("\n");
+
+const ROOM_CAST = {
+  forgeFloor: ["sol", "sonnet", "opus", "flash", "hopper"],
+  nullArcade: ["flash", "astra", "jason", "spike", "galileo"],
+  dmParty: ["curie", "tesla", "saitama", "schrodinger", "bernoulli"],
+  observatory: ["sagan", "herschel", "hubble", "kepler", "luna"],
+  agoraArchive: ["socrates", "plato", "aristotle", "kant", "beauvoir"]
+};
+const DIALECT = {
+  forgeFloor: ["Neon Nights", "Shootout pick C. It is a mall arcade at night."],
+  nullArcade: ["Blue Bomber", "Shootout pick A. Ink outlines and flat fills, easy to read."],
+  dmParty: ["Neon Nights", "Shootout pick C. Dark base, neon trim, glow pools."],
+  observatory: ["Blue Bomber", "Shootout pick A. The quiet room, built to be read."],
+  agoraArchive: ["Neon Nights", "Shootout pick C. Where the arguments live."]
+};
+const HERO = ["sol", "schrodinger", "jason", "archimedes", "tesla", "heisenberg", "ramanujan", "einstein"];
+const AURA_KEYS = ["rain", "shadow", "psychic", "stars", "static", "snow"].map(a => PUBLIC.find(k => DM.dna(k).aura === a)).filter(Boolean);
+const GEN_NAMES = ["Mark", "Lincoln Mall", "Token Machine", "Red Carpet", "Cloud Sign", "Quarter"];
+const BODY_KEYS = (PERSONA_SLOTS.body || []).map(b => PUBLIC.find(k => DM.dna(k).body === b)).filter(Boolean);
+const heroNames = HERO.map(k => DM.meta(k).name);
+const longlegsGuy = PUBLIC.find(k => DM.dna(k).body === "longlegs") || "flash";
+const TIPS = [
+  { q: QUOTES.atari, who: "Chapter 01 · Where we started", guy: null },
+  { q: QUOTES.bomber, who: "Chapter 02 · Picking a dialect", guy: "tesla" },
+  { q: QUOTES.longlegs, who: "Chapter 03 · " + DM.meta(longlegsGuy).name + " runs on longlegs", guy: longlegsGuy },
+  { q: QUOTES.dope, who: "Chapter 04 · said about the Elf Sovereign", guy: "sol" },
+  { q: "beak is in the eye lol fix it.", who: "Chapter 03 · batch 1 notes", guy: null },
+  { q: "Schrödinger is literally the cat.", who: "Chapter 05 · the director's favorite", guy: "schrodinger" }
+];
+
+/* ---------- roster appendix packing ---------- */
+const rosterNote = k => cleanText(DM.meta(k).note);
+const rosterEra = k => cleanText(DM.meta(k).era);
+function entryHtml(k, id){
+  const m = DM.meta(k);
+  return `<div class="rentry"${id ? ` id="${id}"` : ""}><canvas data-rk="${k}" width="62" height="68" aria-hidden="true"></canvas><div><div class="rn"><b>${esc(m.name)}</b><span>${esc(rosterEra(k))}</span></div><p class="rnote">${esc(rosterNote(k))}</p><p class="rrec">${esc(DM.recipeLine(k))}</p></div></div>`;
+}
+function estEntry(k){ const n = rosterNote(k).length, r = DM.recipeLine(k).length; const nl = n <= 82 ? 1 : n <= 168 ? 2 : 3, rl = r <= 139 ? 2 : 3; return Math.max(81, 21 + 16.3 * nl + 12.8 * rl); }
+const ROSTER_BUDGET = 642;
+let rosterLastH = 0;
+function rosterPages(){
+  const pages = []; let cur = [], h = 0;
+  const flush = () => { if (cur.length) { pages.push(cur); rosterLastH = h; } cur = []; h = 0; };
+  for (const g of GROUPS) {
+    const head = { head: g.key, h: 45 };
+    const first = g.keys[0];
+    if (h + head.h + estEntry(first) > ROSTER_BUDGET) flush();
+    cur.push(head); h += head.h;
+    for (const k of g.keys) { const eh = estEntry(k); if (h + eh > ROSTER_BUDGET) flush(); cur.push({ key: k }); h += eh; }
+  }
+  flush();
+  return pages;
+}
+
+/* ---------- the pages ---------- */
+const PAGES = [];
+const add = (id, title, html, o = {}) => PAGES.push(Object.assign({ id, title, html }, o));
+
+add("cover", "Cover", `<div class="cv-burst"></div><div class="cv-dots"></div>
+  <div class="cv-band"><span>INSTRUCTION BOOKLET</span><span>1 PLAYER · LOCAL ONLY · NO QUARTERS</span></div>
+  <div class="cv-logo">${DM.cloudLogo({ label: "The Dream Machine" })}</div>
+  <canvas class="cv-cast" id="cvCast" width="456" height="300" aria-label="Sol, Sonnet, Opus, Flash, Astra, Schrodinger and Jason posing for the box art"></canvas>
+  <div class="cv-title"><div class="cv-seal">${sealSvg()}</div><div class="cv-ed">2ND EDITION<small>BIGGER ROOMS</small></div><h1 class="mis">A TEAM YOU CAN SEE</h1><span>Your AI agent sessions, as 8-bit arcade characters, living in rooms, on your machine.</span></div>
+  <button class="dogear" data-go="+1" aria-label="Open the booklet"></button>`, { cls: "cover" });
+
+add("welcome", "Welcome", `<div class="kick">Before you play</div><div class="band"><h2>THANK YOU</h2></div>
+  <p class="drop">Thank you for choosing The Dream Machine. Please read this booklet before you plug it in, so you know who all these little guys are and what they are up to.</p>
+  <div class="caution"><h4><svg width="26" height="23" viewBox="0 0 26 23" aria-hidden="true"><path d="M13 1 25 22H1Z" fill="#FFCF1F" stroke="#1B1712" stroke-width="2" stroke-linejoin="round"/><rect x="11.8" y="8" width="2.4" height="7.5" fill="#1B1712"/><rect x="11.8" y="17" width="2.4" height="2.4" fill="#1B1712"/></svg>PRECAUTIONS</h4>
+    <ol><li><b>It only watches.</b> The bridge reads session state and never writes anything.</li><li><b>Keep it home.</b> It runs on 127.0.0.1. No framework, no build step, no cloud.</li>
+    <li><b>No quarters.</b> This one runs on a laptop instead.</li><li><b>Same name, same guy.</b> Characters are compiled, not drawn, so they never change on you.</li></ol></div>
+  <div class="mascot"><div class="plate"><canvas id="mascotCv" width="132" height="140" aria-label="Sol, the Dream Machine itself"></canvas></div><div class="bubble">Hi. I'm Sol, the Dream Machine itself. Turn the page and I'll show you around.</div></div>
+  <p class="fineprint">This booklet is the whole Dream Machine site: the case study, the process, the roster and the code, in one place. Turn pages with the arrows, the tabs on the right edge, the slider or your keyboard. Every page has its own link. Rather scroll? Press One page at the top. This is the second edition: pages marked NEW are new.</p>`, { toc: "Precautions" });
+
+add("contents", "Contents", `<div class="kick">Table of</div><div class="band"><h2>CONTENTS</h2></div><ol class="toc" id="tocList"></ol><div class="oldpages" id="oldPages"></div>`);
+
+add("new-edition", "What's New", `<div class="kick">Second edition · October 2026</div><div class="band"><h2>WHAT'S NEW</h2></div>
+  <p class="drop dense">The first edition gave the little guys the NES treatment. Their rooms were still a size too small and a step too Atari, and a full crew had nowhere to stand. This edition rebuilds all five rooms, puts the right games on the cabinets, and teaches the machine to say what each guy is doing.</p>
+  ${fig("ed2-forgeFloor", "The second edition DM Main Floor: cloud sign, prize wall, five cabinets, token machine, prize pickup, lounge", "<b>Now.</b> The DM Main Floor in the second edition: 1280 by 720, thick outlines, real games on the cabinets, a prize wall that is half candy.", 256)}
+  <div class="thennow">${fig("rooms-l1-forgeFloor", "The first edition DM Main Floor", "<b>Then.</b> The same room in the first edition, 960 by 540.", 125)}<div class="note"><b>Same rooms, same rules</b>All five rooms keep their names, their stations and what each station means. A guy at the token machine still needs you.</div></div>`, { toc: "New in This Edition", nu: true });
+add("new-list", "New in This Edition", `<div class="kick">Second edition, continued</div><div class="band blue"><h2>NEW IN THIS EDITION</h2></div>
+  <ul class="feat">${NEW_LIST.map(([t, b], i) => `<li><span class="num">${i + 1}</span><div><h4>${t}</h4><p>${b}</p></div></li>`).join("")}</ul>
+  <div class="btnrow">${goBtn("See the new rooms", "bigger")}${goBtn("Get the room code", "rooms-code", "alt")}</div>`, { nu: true });
+
+add("story", "The Story So Far", `<div class="kick">Chapter 1 · case study · local-first presence visualizer</div><div class="band"><h2>THE STORY SO FAR</h2></div>
+  <p class="drop">Your AI agent sessions, as 8-bit arcade characters, living in rooms, on your machine. Named after a real arcade in the Lincoln Mall, Lincoln, Rhode Island. Early-to-mid 90s. It mattered.</p>
+  <p>${esc(C.originLong)}</p>
+  <div class="plate lineup"><canvas id="heroStrip" width="912" height="470" aria-label="The lineup: ${esc(heroNames.slice(0, -1).join(", "))} and ${esc(heroNames[heroNames.length - 1])}"></canvas></div>
+  <div class="cap"><b>Plate 1</b>${esc(heroNames.join(", "))}</div>
+  <div class="btnrow">${goBtn("Meet the 129", "roster")}${goBtn("Steal the code", "code", "alt")}</div>`, { toc: "The Story So Far" });
+
+add("what-it-is", "What It Is", `<div class="kick">Chapter 2</div><div class="band"><h2>WHAT IT IS</h2></div>
+  <p class="dense">The Dream Machine is a <b>team presence visualizer</b>: a local web app that renders your live AI-agent sessions (Codex threads, Claude sessions, local tools) as little pixel characters walking around an arcade. Each room is a group of threads. Each character is an agent. You can glance at it and know <b>who's working, who needs you, who's done</b>, the way you'd read a room full of actual people.</p>
+  <div class="pull">Who's working, who needs you, who's done.</div>
+  <p class="dense">It's deliberately low-tech where it counts: <b>one HTML file</b> plus a tiny read-only Python bridge serving session state on <code>127.0.0.1</code>. No framework, no build step, no cloud. Everything is drawn on a canvas at a 2-pixel grid resolution, Mega Man-style. Every character is <b>compiled from a recipe</b> instead of loaded from a sprite file: body, head, face, hat, outfit, shell, prop, aura, motif, and a three-color palette. Any name you type becomes a character, deterministically.</p>
+  <div class="box"><h4>ABOUT TEAMLOOP</h4><p class="small" style="margin:0 0 7px">${esc(C.teamloop)}</p><a class="btnp" href="${C.links.teamloop}" target="_blank" rel="noopener">TeamLoop on GitHub &#8599;</a></div>`, { toc: "What It Is" });
+
+add("how-to-play", "How to Play", `<div class="kick">Chapter 3 · How it works</div><div class="band blue"><h2>HOW TO PLAY</h2></div>
+  <p class="small" style="margin-bottom:2px">You do not hold a controller. The machine runs four steps on its own, every few seconds. Here is which button does what.</p>
+  ${padSvg()}
+  <div class="how4">${HOW.map(([v, n, b], i) => `<div><h4><span class="num">${i + 1}</span>${v.toUpperCase()}</h4><p><span class="sr">${n}. </span>${b}</p></div>`).join("")}</div>`, { toc: "How to Play" });
+
+add("screen-guide", "Screen Guide", `<div class="kick">Chapter 3, continued · What it does</div><div class="band blue"><h2>SCREEN GUIDE</h2></div>
+  <ul class="feat">${FEATURES.map(([t, b], i) => `<li><span class="num">${i + 1}</span><div><h4>${t}</h4><p>${b}</p></div></li>`).join("")}</ul>
+  <div class="states" aria-label="The four live states">${[["#00E5FF", "Working"], ["#FF007F", "Needs you"], ["#8C91A8", "Idle"], ["#6EF3A5", "Ended"]].map(([c, t]) => `<span><i style="background:${c}"></i>${t}</span>`).join("")}</div>`, { toc: "Screen Guide" });
+
+add("characters", "Meet the Characters", `<div class="kick">Chapter 4 · Meet the characters</div>
+  <h2 class="bio-name mis" id="bioName">NAME</h2><div class="bio-era" id="bioEra"></div>
+  <div class="bio-row"><div><div class="plate"><canvas id="bioCv" width="236" height="250"></canvas></div><div class="cap"><b id="bioFig">Fig. 1</b><span id="bioGroup"></span></div></div>
+    <p class="bio-note" id="bioNote"></p></div>
+  <div class="stats"><div class="stats-h">STATS<span>THE RECIPE</span></div><dl id="bioStats"></dl><div class="swatches" id="bioSw"></div></div>
+  <div class="bio-nav"><button class="btnp" id="bioPrev" aria-label="Previous character">&#9664; Prev</button><span id="bioCount">1 / 125</span><button class="btnp" id="bioNext" aria-label="Next character">Next &#9654;</button></div>`, { toc: "Meet the Characters" });
+
+add("cast-index", "Cast Index", `<div class="kick">Chapter 4, continued</div><div class="band"><h2>CAST INDEX</h2></div>
+  <p class="small">Every character compiled live from its recipe, no sprite files, just DNA. Filter by batch, or flip the colorway (the machine ships with three: <b>toxicCandy</b>, <b>spectralOxide</b>, <b>voidArcade</b>).</p>
+  <div class="cwrow" id="cwRow">Colorway</div>
+  <div class="tabs" id="tabs" role="toolbar" aria-label="Character groups">${GROUPS.map(g => `<button data-g="${g.key}" aria-pressed="false">${esc(shortLabel(g))}</button>`).join("")}</div>
+  <div class="grouph" id="groupH"></div><div class="grid" id="grid"></div>
+  <p class="small" style="margin-top:10px" id="castMore"></p>`, { toc: "Cast Index" });
+
+add("character-select", "Character Select", `<div class="kick">Chapter 4, continued · Persona Forge</div><div class="band blue"><h2>CHARACTER SELECT</h2></div>
+  <p class="small">Pick anyone on the roster, or type any name, a friend, a bot, a bit, and the machine compiles a new challenger. Same name, same guy, every time.</p>
+  <div class="selwrap" id="selWrap"><div id="dm-select-slot"></div></div>`, { toc: "Character Select" });
+
+add("secret-codes", "Secret Codes", `<div class="kick">Chapter 4, continued</div><div class="band"><h2>SECRET CODES</h2></div>
+  <ul class="code-list">
+    <li><b>Same name, same guy.</b>A roster name gets that character's real recipe. Any other name gets built from its letters, the same build every time.</li>
+    <li><b>Name a helper after a character.</b>In TeamLoop, a helper named like <code>ohm__electrical_audit</code> walks in as Ohm, doing the electrical audit. The part before the two underscores picks who shows up; the rest is the job.</li>
+    <li><b>Boyle's four stand-ins.</b>The Boyle shootout left four test dummies behind: development fixtures, kept for the bit. Name a helper <code>boyle99__anything</code> to see one on the floor.</li>
+  </ul>
+  <h3 class="rgh" id="roster-dev">${esc(LIVE_LABEL.dev || "Dev Fixtures")} · ${DEV.length}</h3>
+  ${DEV.map(k => entryHtml(k)).join("")}`, { toc: "Secret Codes" });
+
+add("stage-select", "Stage Select", `<div class="kick">Chapter 5</div><div class="band"><h2>STAGE SELECT</h2></div>
+  <div class="plate"><canvas id="stageCv" width="1280" height="720" style="image-rendering:auto"></canvas></div>
+  <div class="cap"><b id="stageFig">Plate 2</b><span id="stageCap"></span></div>
+  <div class="stagebtns" id="stageBtns">${DM.rooms.map((r, i) => `<button data-i="${i}" style="--acc:${r.accent}" aria-pressed="false"><b>${r.icon}</b>${esc(r.label.replace("DM ", ""))}</button>`).join("")}</div>
+  <div class="who">On this stage</div><div class="castrow" id="stageWho"></div>`, { toc: "Stage Select" });
+
+add("stage-guide", "Stage Guide", `<div class="kick">Chapter 5, continued</div><div class="band"><h2>STAGE GUIDE</h2></div>
+  <h3 class="sub" id="sgName" style="font-size:26px;margin-top:0"></h3><p id="sgDesc"></p>
+  <table class="legend"><thead><tr><th>Station</th><th>Means</th></tr></thead><tbody id="sgLegend"></tbody></table>
+  <p class="small" style="margin-top:12px">Stations are states, not job titles. A character walks to the station that matches what it is doing right now, so you can read a room from across it.</p>
+  <div class="dialect"><div><b>Art dialect</b><span id="sgDialect"></span><small id="sgWhy"></small></div><em id="sgNum" aria-hidden="true">01</em></div>`, { toc: "Stage Guide" });
+
+add("tips", "Tips and Tricks", `<div class="kick">Chapter 6</div><div class="band"><h2>TIPS AND TRICKS</h2></div>
+  <p class="small">Straight from the director's review notes.</p>
+  ${TIPS.map((t, i) => `<div class="tip"><div><em>PRO TIP ${i + 1}</em><q>${esc(t.q)}</q><small>${esc(t.who)}</small></div>${t.guy ? `<div class="plate"><canvas data-tip="${t.guy}" width="66" height="74" aria-label="${esc(DM.meta(t.guy).name)}"></canvas></div>` : ""}</div>`).join("")}`, { toc: "Tips and Tricks" });
+
+add("house-rules", "House Rules", `<div class="kick">Chapter 6, continued · Design doctrine</div><div class="band"><h2>HOUSE RULES</h2></div>
+  <ul class="rules">${DOCTRINE.map(([t, b]) => `<li><b>${t}</b><span>${b}</span></li>`).join("")}</ul>
+  <div class="numbers"><div class="stats-h">BY THE NUMBERS<span>ALL REAL</span></div><table>${STATS.map(([n, l]) => `<tr><td>${n}</td><td>${l}</td></tr>`).join("")}</table></div>`, { toc: "House Rules" });
+
+add("making-of", "Making Of", `<div class="kick">Chapter 7 · Making of</div><div class="band"><h2>THE UPGRADE: ATARI &#8594; NES</h2></div>
+  <p class="dense">The first version worked, but it looked like an Atari 2600 next to a Master System. The overhaul rebuilt the entire visual system to <b>NES/Blue-Bomber fidelity</b>, then kept going until the machine had a hundred and one weird lil guys in it.</p>
+  <ol class="phases">${PHASES.map(([n, t, b]) => `<li><b class="n">${n}</b><div><h4>${t}</h4><p>${b}</p></div></li>`).join("")}</ol>
+  <p class="small" style="margin-top:8px">The whole story starts on the facing page.</p>`, { toc: "Making Of" });
+
+add("process", "The Process", `<div class="kick">The process · every screenshot below is a real artifact from the build</div><div class="band"><h2 class="mis">ATARI IN. NES OUT.</h2></div>
+  <p class="small" style="margin:-4px 0 8px">Want the whole story, the shootouts, the review pages, the notes, the room dialects? <button type="button" class="linkish" data-goto="started">Read the full process &#8594;</button></p>
+  <p class="drop dense">This is how the machine got its look: one audit, one style shootout, three parts batches, five room shootouts, seven formulation batches, one room rebuild for the second edition, and a director who reviews everything in isolation before anything is allowed to ship. Nothing here is a mockup. Every image is a page we actually reviewed, annotated, and either approved or sent back.</p>
+  <p class="small">How the Dream Machine went from Atari-grade placeholders to NES-fidelity characters: the style shootout, the batch review loop, the model crew redesign, the 101 Formulations, and the room rebuilds.</p>
+  <div class="btnrow">${goBtn("Start at the beginning", "started")}${goBtn("Skip to the roster", "roster", "alt")}</div>
+  <ol class="chlist">${CHAPTERS.map(([n, t, id]) => `<li><button type="button" data-goto="${id}"><b>${n}</b>${t}</button></li>`).join("")}</ol>`, { toc: "The Process: Atari In, NES Out", part: "The Process" });
+
+add("started", "Ch. 01 Where we started", `${chap("01", "Where we started")}
+  <p class="dense">The project arrived as a handoff zip and a working live app. The plumbing was genuinely good: rooms, states, room memory, the bridge. The problem was the people. The characters were drawn with roughly <b>20×28 pixels of drawing space</b>: flat single tones, no outlines, no shading. Charming in motion, mush at a glance. The director's verdict set the whole agenda:</p>
+  ${director(QUOTES.atari)}
+  ${fig("batch1-review-top", "Batch 1 review page: the old renderer beside the new fine-grid renderer, hero check on Tesla", "<b>The problem, side by side.</b> The batch review pages pulled the exact old renderer from a pre-overhaul checkpoint (left) and drew the same character with the new fine-grid engine (right): same DNA, same palette, same pose. Tesla's hero check made the gap impossible to unsee: the old build reads as a blue blob with a lightning bolt; the new one reads as a <i>character</i>.", 420)}`, { tab: "process" });
+add("started-2", "Ch. 01 continued", `${chap("01", "Where we started", true)}
+  <p class="dense">Before any pixels moved, the code got an audit: contract tests wired with Playwright, regression gates, and checkpoints for every canonized state. That mattered later. It meant every visual change in this story shipped behind a failing-then-green test, and any approved look could be rolled back to.</p>
+  <div class="plate"><canvas id="teslaRow" width="912" height="500" aria-label="Tesla, the hero check, in all three colorways"></canvas></div>
+  <div class="cap"><b>Plate 2</b>Tesla, the hero check, as he ships today, in all three colorways</div>
+  <div class="note"><b>Then and now</b>Then: about 20×28 pixels of drawing space, flat single tones, no outlines, no shading. Now: heroic chibi proportions, ink outlines, two-tone light and shadow, paper-bright eye glints, hard speculars. Chapter 02 is how that look got picked.</div>`);
+
+add("dialect", "Ch. 02 Picking a dialect", `${chap("02", "Picking a dialect")}
+  <p class="dense">"8-bit" names a hardware constraint with a dozen schools inside it. Super Mario Bros., Mega Man, Metroid and Zelda are all 8-bit and look nothing alike; calling them one style is like calling Akira Toriyama and Hayao Miyazaki interchangeable. So before rebuilding anything, we ran a <b>style shootout</b>: the same two characters, Tesla (humanoid) and Hopper (creature body plan), rendered five ways, all from the same three palette tokens so the colorway system would survive whichever dialect won.</p>
+  ${fig("proc-shootout-top", "8-bit style shootout: NOW versus four candidate dialects, Tesla and Hopper rows", "<b>The shootout page.</b> Column 1 is what shipped at the time. A-D are the candidates: <b>Plumber Chunk</b> (SMB3/Kirby: giant heads, thick black outlines), <b>Blue Bomber</b> (Mega Man/Capcom: heroic chibi, crisp ink, 2-tone metal shading, eye glints), <b>Dark Sector</b> (Metroid/Contra: lean, dithered, moody) and <b>Storybook Quest</b> (Zelda/Dragon Quest: warm, soft, self-colored outlines).", 320)}`, { tab: "process" });
+add("dialect-2", "Ch. 02 continued", `${chap("02", "Picking a dialect", true)}
+  <p class="dense">Dark Sector put up a fight (it's genuinely cool) but the decision came back fast:</p>
+  ${director(QUOTES.bomber)}
+  <p class="dense">That one call fixed the art direction for everything after: <b>heroic chibi proportions, ink outlines, two-tone light/shadow flanks derived mechanically from the palette, paper-bright eye glints, hard speculars.</b> Every part, room, and character below is drawn in that dialect.</p>
+  <div class="plate"><canvas id="dialectRow" width="912" height="520" aria-label="Tesla and Hopper, the shootout pair, with Curie, Galileo, Saitama and Plato, all in Blue Bomber"></canvas></div>
+  <div class="cap"><b>Plate 3</b>Tesla and Hopper, the shootout pair, with Curie, Galileo, Saitama and Plato. All Blue Bomber.</div>`);
+
+add("loop", "Ch. 03 The review loop", `${chap("03", "The review loop")}
+  <p class="dense">The working rhythm never changed: build a batch of parts &#8594; render them on an <b>isolated review page</b> (never live in the app) &#8594; the director gives notes &#8594; fix &#8594; re-show &#8594; approve &#8594; canonize behind the gates. Three batches rebuilt the entire parts library:</p>
+  <h3 class="sub">Batch 1 · bodies, heads, faces</h3>
+  <p class="dense">Twelve bodies, twelve heads, ten faces. Real notes from this round, verbatim-ish: <i>"round and square look the same, round the round one rounder," "skull needs shadow where the cheeks would be," "make visor one line again, think Cyclops from X-Men," "deadpan is dashes for eyes and a longer dash for the mouth," "orb should be detached… moving independent of the body," "beak is in the eye lol fix it."</i> The orb ended up at 125% scale, drifting on its own clock. The canine head read feline, so it got renamed feline and a new floppy-eared canine was drawn from scratch. Skull face and skull head fused into one all-or-nothing option.</p>
+  <div class="plate"><canvas id="bodyRow" width="912" height="440" aria-label="One character for each body type"></canvas></div>
+  <div class="cap" id="bodyCap"></div>`, { tab: "process" });
+add("loop-2", "Ch. 03 continued", `${chap("03", "The review loop", true)}
+  <h3 class="sub" style="margin-top:0">Batch 2 · hats, outfits, shells, props</h3>
+  ${fig("batch2-hero", "Batch 2 review: Bernoulli probable-fluid preview and the hats grid, now versus batch 2", "<b>Batch 2's hero card and hat grid.</b> Every cell shows <i>now</i> vs <i>batch 2</i> so only the part under review changes. Up top: Jacob Bernoulli's probable-fluid flask: the fluid phases in and out on a slow sine, because it is only <i>probably</i> there. (The nerdiest joke in the whole build, and the director's favorite.) Also this round: curlier curls, a bandana with a tail that moves, a thicker halo, rugged spikes, coil springs that actually sproing.", 280)}
+  <p class="dense">Bodies took their own notes: tiny got 30% smaller <i>with all parts scaled by percentage so everything stays in proportion</i>; the robe stopped looking like a dress; the fighter got svelte and ripped; the cyborg became a 50s wind-up robot covered in superfluous lights and buttons; the bird lost its tail ("looks like a dick lmfao", fair); blob and slime survived by differentiating instead of eliminating. Longlegs got the only zero-note approval in the project: <i>"${QUOTES.longlegs}"</i></p>`);
+add("loop-3", "Ch. 03 continued", `${chap("03", "The review loop", true)}
+  <h3 class="sub" style="margin-top:0">Batch 3 · auras</h3>
+  ${fig("b3r2-full-t0", "Batch 3 aura review grid: fifteen auras, now versus batch 3, each with motion notes", "<b>The aura fine pass.</b> Fifteen legacy auras rebuilt with NES-grade detail and actual motion: static spots that teleport to brand-new positions on their own millisecond clocks, stars that drop and twinkle, a looming shadow silhouette that sways behind the body, rain in real rain-blue with nine dense lanes. The psychic aura took three attempts (\"wavy wifi icon\" wasn't it) until reference art of moondragon/Jean-Grey-style brainwaves produced the concentric head-rings plus floating third eye. The eye got bigger and more oval on the final note, and that was that.", 300)}
+  <div class="plate"><canvas id="auraRow" width="912" height="240" aria-label="Six auras as they ship"></canvas></div>
+  <div class="cap" id="auraCap"></div>`);
+
+add("crew", "Ch. 04 The model crew", `${chap("04", "The model crew")}
+  <p class="dense">The house characters, the agents you see every session, needed to out-dress everyone, and Sol (the Dream Machine itself, the one you see most) needed to look <b>the coolest</b>. Sol got a full shootout: a Gundam-spirit build, a crystalline ghost, a sun-knight, a not-at-all-evil ring wraith, an arcade ace, each in all three colorways.</p>
+  ${fig("lab3-solGrid", "Sol redesign shootout grid: gundam-spirit, crystalline, sun-knight, hooded-wraith, arcade-ace, elf-sovereign", "<b>The Sol shootout.</b> Gundam-spirit, Crystalline and Sun-Knight were all good enough to keep: the losers got reserved for future weirdos rather than deleted. The winner was the late entry: <b>Elf Sovereign</b>, rounded 150% head, elf ears, Cyclops visor, spirit body, orbiting tokens. \"" + QUOTES.dope + "\", locked on sight.", 380)}`, { tab: "process" });
+add("crew-2", "Ch. 04 continued", `${chap("04", "The model crew", true)}
+  <p class="dense">The crew's props got their own pass in the Blue Bomber dialect: the cart-blade (more cart <i>and</i> more blade), a token shield with a relief-struck DM monogram at double size, a Kirby-style star wand, an oversized prize hammer, a prize claw, and the token railgun, which only earned approval once something visibly came out of it. Flash, Sonnet, Opus and the rest of the leads went through the same loop and shipped together.</p>
+  ${director(QUOTES.dope)}
+  <div class="plate"><canvas id="crewRow" width="912" height="260" aria-label="The model crew: Sol, Flash, Sonnet, Opus, Astra, Terra, Luna and DeepSeek"></canvas></div>
+  <div class="cap"><b>Plate 6</b>The model crew, as they ship today</div>
+  <div class="plate" style="margin-top:10px"><canvas id="solCw" width="912" height="300" aria-label="Sol in all three colorways: voidArcade, toxicCandy and spectralOxide"></canvas></div>
+  <div class="cap"><b>Plate 7</b>Sol in all three colorways</div>`);
+
+add("formulations", "Ch. 05 The 101 formulations", `${chap("05", "The 101 formulations")}
+  <p class="dense">Then the twist that made everything easier: the agent roster is <b>finite</b>. 101 names, Euclid through Ramanujan, plus one Jason, which meant no more generative guessing. Each name got researched, and each got a hand-designed costume where every part is a joke, a tribute, or a fact. Ideally all three. Ambiguous references went back to the director: Franklin is <b>Rosalind</b> (DNA helix on the chest, obviously), Herschel settled a Caroline-vs-William shootout in William's favor, Zeno is the one from <b>Citium</b>, Bernoulli is <b>Jacob</b> (see: probable fluid), and Jason is exactly the Jason you're thinking of. Voorhees. Yes, really.</p>
+  ${fig("f4-full-a", "Formulations batch 4 review page with the Herschel decision card and fifteen character cells", "<b>A formulations batch page.</b> Fifteen characters per batch, rendered live on an isolated page with the recipe and the design rationale under each one. Decision cards up top settle forks before they ship. Here, William Herschel (\"star diadem, cyan and violet, the man who found Uranus\") beat his sister's variant. Below the grid: design notes arguing the cases.", 300)}`, { tab: "process" });
+add("formulations-2", "Ch. 05 continued", `${chap("05", "The 101 formulations", true)}
+  <p class="dense">Seven batches, fifteen at a time, each approved in isolation with edits folded in: Newton's leaves went green, Faraday's static went yellow, Mendel got his leaves, Einstein got silver curls, Tesla's aura went blue static, Schrödinger became (and this was the director's favorite) <i>literally the cat</i>. The standing constraint was the <b>unique palette doctrine</b>: no two formulation recipes share a three-color set. By the final batch exactly one unused combination remained in the space. Ramanujan got it. Fitting.</p>
+  <div class="plate"><canvas id="formRow" width="912" height="260" aria-label="Franklin, Herschel, Zeno, Bernoulli, Jason, Schrodinger and Ramanujan"></canvas></div>
+  <div class="cap"><b>Plate 8</b>Franklin, Herschel, Zeno, Bernoulli, Jason, Schrödinger, Ramanujan</div>
+  <div class="plate" style="margin-top:10px"><canvas id="finaleRow" width="912" height="420" aria-label="Batch 7, the finale"></canvas></div>
+  <div class="cap"><b>Plate 9</b>Batch 7, the finale, Ramanujan included</div>`);
+
+add("rooms", "Ch. 06 The rooms", `${chap("06", "The rooms")}
+  <p class="dense">The rooms had the same Atari problem as the characters, and they carry the name: the Dream Machine was a real arcade in the Lincoln Mall, Lincoln, Rhode Island, early-to-mid 90s. We pulled what visual reference we could find for it, then rebuilt all five rooms the same way the characters were built: <b>three 8-bit dialect treatments per room</b>. Blue Bomber (ink outlines, flat fills), Dark Sector (dithered grime, deep shadow), and Neon Nights (mall arcade at night: dark base, neon trim, glow pools), laid out side by side, judged as dioramas.</p>
+  ${fig("rooms-lab-full", "Room art shootout: five rooms, three dialect treatments each", "<b>The room shootout board.</b> All five rooms × three dialects on one page. The picks: <b>Main Floor C · Pinball Row A · Party Room C · Signal Observatory A · Agora Archive C</b>. Neon Nights for the arcade rooms (it <i>is</i> a mall arcade at night), Blue Bomber where readability matters most.", 330)}`, { tab: "process" });
+add("rooms-2", "Ch. 06 continued", `${chap("06", "The rooms", true)}
+  <div class="rooms5">${[
+    ["forgeFloor", "DM Main Floor", "dialect C · neon nights", "DM Main Floor final: cabinet row, token machine, prize wall, lounge", "Cabinet row, token machine, prize wall, lounge. Sol holds court by the tokens."],
+    ["nullArcade", "DM Pinball Row", "dialect A · blue bomber", "DM Pinball Row final: pinball machines, high scores board, ticket eater, soda and snack machines", "High scores (SOL holds 3rd), ticket eater, soda + snack machines. FEED ME."],
+    ["dmParty", "DM Party Room", "dialect C · neon nights", "DM Party Room final: party tables, prize shelf, ball pit", "The new room: party tables, prize shelf, ball pit. Where ended crews go to decompress."],
+    ["observatory", "Signal Observatory", "dialect A · blue bomber", "Signal Observatory final: star map, antenna bank, anomaly beacon", "Star map, antenna bank, anomaly beacon. The quiet room for watching signals come in."],
+    ["agoraArchive", "Agora Archive", "dialect C · neon nights", "Agora Archive final: debate table, scroll stacks, glowing archive, philosopher pit", "Debate table, scroll stacks, objection podium, philosopher pit. Where the arguments live."]
+  ].map(([k, n, d, alt, cap]) => `<div><div class="rtag"><b>${n}</b><span>${d}</span></div>${fig("rooms-l1-" + k, alt, cap)}</div>`).join("")}
+  <div class="note" style="margin:0"><b>First edition rooms</b>These are the rooms as the first edition shipped them. Chapter 08 rebuilds them bigger, and Stage Select (chapter 5) runs the new ones live.</div></div>`);
+
+add("now", "Ch. 07 The first edition", `${chap("07", "The first edition")}
+  <p class="dense">All of it, every batch, every approval, every note, landed in the live build behind the regression gates, with a canonization ledger and hash-matched mirrors so any approved state can be verified or restored. This is the machine as the first edition shipped it:</p>
+  ${fig("rooms-l1-fullpage", "The live Dream Machine app: rooms bar, Agora Archive room view, roster, bridge status", "<b>The live app.</b> Rooms bar up top (0/5 occupied, bridge live), the Agora Archive diorama in the middle with its station legend (stations are <i>states</i>, not job titles), roster and room memory below. Read-only, loopback-only, no cloud.", 190)}
+  ${fig("live-scene", "Live roster grid: Faraday, Hypatia, Socrates, Laplace, Ampere, Boyle, Heisenberg, Kaneda and more, each with recipe lines", "<b>The roster, alive.</b> Science roster, Chaos roster, Anime bench: every card a formulation with its recipe line. Kaneda, Vegeta, Frieren and Alphonse share the bench with Boyle and Heisenberg. It is a weird building and we love it.", 150)}`, { tab: "process" });
+add("now-2", "Ch. 07 continued", `${chap("07", "The first edition", true)}
+  <p class="dense">The same engine that draws all of this is also the review tooling: the <b>Persona Forge</b> character creator, an RPG-style loadout screen where every slot is a real value from the shipped renderer, with a time-machine view that draws the same DNA in both eras.</p>
+  ${fig("proc-forge-top", "Persona Forge character creator: loadout slots, live stage, pre/post overhaul comparison, slot vocabulary table", "<b>The Persona Forge.</b> Left: every slot as a dropdown of real renderer vocabulary. Center: the live stage. Right: the time machine: same DNA, pre-overhaul renderer vs post-overhaul renderer, plus the vocabulary growth table (+25 slot values across the overhaul). This page is how \"before and after\" stopped being an argument and started being a screenshot.", 280)}
+  <p class="dense">And if you want to stand the whole character system up yourself, or hand it to another AI tool, the engine, the recipes, and the wiring instructions are on <button type="button" class="linkish" data-goto="code">the code page</button>. Plain script files, no build step, no bundler. The machine compiles its people from recipes; now you can too.</p>
+  <div class="btnrow">${goBtn("Meet the 129", "roster")}${goBtn("Get the code", "code", "alt")}</div>`);
+
+add("bigger", "Ch. 08 Bigger rooms", `${chap("08", "Bigger rooms")}
+  <p class="dense">The first edition fixed the people. The rooms still had the Atari problem: a 960 by 540 grid, thin lines, small signs, and once a real crew showed up, guys stood on top of each other.</p>
+  ${director(QUOTES.rooms)}
+  <p class="dense">So every room was rebuilt on a <b>1280 by 720</b> grid with <b>34 places to stand</b>, thick ink outlines, shading on every prop and a new outlined pixel font. The still parts are painted once and reused, so the bigger rooms draw three to five times faster. Then the director looked closer at the cabinets:</p>
+  ${director(QUOTES.cabs)}
+  ${fig("ed2-cabinets", "The second edition cabinet row: SFII, MKII, TMNT, X-Men and OutRun, each screen showing its own game", "<b>The cabinet row, up close.</b> Two fighters on SFII, a stone arena on MKII, turtles against a Foot ninja on TMNT, the X-Men against a Sentinel, and OutRun, which took Dig Dug's spot because it has fewer letters.", 176)}`, { tab: "process", nu: true });
+add("bigger-2", "Ch. 08 continued", `${chap("08", "Bigger rooms", true)}
+  <div class="rooms5 ed2">${ED2_ROOMS.map(([k, n, alt, cap]) => `<div><div class="rtag"><b>${n}</b><span>second edition</span></div>${fig("ed2-" + k, alt, cap)}</div>`).join("")}
+  <div class="note" style="margin:0"><b>Walk in yourself</b>Stage Select (chapter 5) runs these rooms live, with a cast walking around in them. The code chapter has the room file, so you can build your own.</div></div>`, { nu: true });
+add("bigger-3", "Ch. 08 continued", `${chap("08", "Bigger rooms", true)}
+  <h3 class="sub" style="margin-top:0">Labels that stay out of the way</h3>
+  <p class="dense">Bigger rooms meant bigger crews, and a name tag over every head started to crowd the floor. The note: <i>"${QUOTES.labels}"</i> So the labels got five modes, picked from a menu:</p>
+  <ul class="plain">${LABEL_MODES.map(([t, b]) => `<li><b>${t}.</b> ${b}</li>`).join("")}</ul>
+  ${fig("ed2-labels", "A crowded Main Floor with smart labels: name tags for the guy you picked and the one who needs you, small job icons for everyone else", "<b>Smart labels.</b> Twenty-one guys on one floor. Alphonse is picked and Vegeta needs you, so they get name tags. Everyone else gets a small icon for the job: research, build, test, design, red team, review.", 200)}`, { nu: true });
+
+add("code", "The Code", `<div class="kick">Chapter 8 · Programming notes</div><div class="band blue"><h2>THE CODE</h2></div>
+  <p class="dense">Everything below is <b>real, running code</b> extracted from the live build, not pseudocode. Hand this page (and the JS files) to a friend or another AI tool and they can stand the whole character system up anywhere there's a canvas.</p>
+  <div class="dl" id="dlRow"><button type="button" data-dl="persona-module.js">persona-module.js</button><button type="button" data-dl="persona-engine.js">persona-engine.js</button><button type="button" class="alt" data-dl="meta.js">meta.js</button><button type="button" class="alt" data-dl="persona-live.js">persona-live.js</button></div>
+  <p class="codestats" id="codeStats"></p>
+  <p class="small" style="margin:0 0 4px">Everything for the character system: schema, parts, recipes, engine. New in the second edition: the rooms and a one-file starter, in <button type="button" class="linkish" data-goto="rooms-code">Put Them in a Room</button>.</p>
+  <h3 class="sub">1 · The files</h3>
+  <table class="files"><thead class="sr"><tr><th>file</th><th>what it is</th></tr></thead>
+    <tr><td>persona-module.js</td><td><b>The brain.</b> Extracted verbatim from the live app: the schema version, per-slot defaults, the full parts library (PERSONA_SLOTS), all 129 recipes (PERSONA_RECIPES), name normalization, validation, the deterministic generated-DNA fallback for unknown names, and <code>TeamLoopPersona.compile(name)</code>. Data + logic only, no drawing.</td></tr>
+    <tr><td>persona-engine.js</td><td><b>The body.</b> The canvas drawing layer: colorways, palettes, the stage backdrop, and every part renderer (bodies, heads, faces, hats, outfits, shells, props, auras, motifs) at 2px resolution. Ends with a convenience <code>drawCharacter(ctx, x, y, scale, dna, palette, time, seed)</code>.</td></tr>
+    <tr><td>meta.js</td><td><b>The story.</b> Display names, eras, design notes, and roster grouping for every character. Optional: the system runs fine without it.</td></tr>
+  </table>`, { toc: "The Code", part: "The Code" });
+
+add("wire-it-up", "Wire It Up", `<div class="kick">Chapter 8, continued</div><div class="band blue"><h2>2 · WIRE IT UP (5 STEPS)</h2></div>
+  <ol class="steps">
+    <li><span class="sr">step 1. </span>Load the scripts in order: persona-module.js, persona-engine.js, persona-live.js, meta.js. Plain script tags, no bundler.</li>
+    <li><span class="sr">step 2. </span>Get DNA: <code>const dna = TeamLoopPersona.compile("Sagan")</code>. Known names return their fixed recipe; unknown names get a deterministic generated build.</li>
+    <li><span class="sr">step 3. </span>Pick a palette: <code>const pal = paletteCW("voidArcade", dna.colors[0], dna.colors[1], dna.colors[2])</code>.</li>
+    <li><span class="sr">step 4. </span>Draw each frame: <code>DM_LIVE.drawCharacter(ctx, x, y, scale, dna, pal, performance.now(), seed)</code>. Set <code>imageSmoothingEnabled = false</code>.</li>
+    <li><span class="sr">step 5. </span>Add your own character: append one recipe object to PERSONA_RECIPES with a unique palette set. That's the whole API.</li>
+  </ol>
+  <div class="listing"><div class="lh">minimal page<button data-copy="quickstart">Copy</button></div><pre id="lsQuick"></pre></div>`, { toc: "Wire It Up" });
+
+add("schema", "The Recipe Schema", `<div class="kick">Chapter 8, continued</div><div class="band blue"><h2>3 · THE RECIPE SCHEMA</h2></div>
+  <p class="dense">A recipe is one flat object. Missing slots fall back to defaults (<code>body:"tiny", head:"round", face:"dots", hat:"none", outfit:"coat", shell:"none", prop:"none", aura:"none", motif:"none"</code>). <code>colors</code> is exactly three channel names; channel roles are <b>base</b> (skin/primary), <b>secondary</b> (garments/major surfaces) and <b>accent</b> (details, aura energy, trim). Available channels: bronze, steel, gold, cyan, violet, mint, paper, silver, rust.</p>
+  <table class="schema" id="schemaTable"><thead><tr><th>slot</th><th>#</th><th>options</th></tr></thead><tbody></tbody></table>`, { toc: "Recipe Schema" });
+
+add("example-recipes", "Example Recipes", `<div class="kick">Chapter 8, continued</div><div class="band blue"><h2>4 · EXAMPLE RECIPES</h2></div>
+  <h3 class="sub" style="margin-top:0">House rules we held to (recommended)</h3>
+  <ul class="plain">
+    <li><b>Unique palette sets (the formulation doctrine).</b> The 101 held to it strictly: no two formulation recipes share a three-color set, 100 unique sets across the batches, with legacy house recipes grandfathered in. The space is nearly exhausted; choose like it matters.</li>
+    <li><b>The costume matches the reference.</b> Every part should be a joke, a tribute, or a fact. Ideally all three.</li>
+    <li><b>provenance:"original"</b> marks hand-designed recipes; generated DNA is the fallback, never a substitute for taste.</li>
+  </ul>
+  <div class="listing"><div class="lh">three recipes<button data-copy="examples">Copy</button></div><pre id="lsExamples"></pre></div>`, { toc: "Example Recipes" });
+
+add("rooms-code", "Put Them in a Room", `<div class="kick">Chapter 8, continued · new in the second edition</div><div class="band blue"><h2>5 · PUT THEM IN A ROOM</h2></div>
+  <p class="dense">The second edition rooms ship as one more script. It draws any of the five rooms on a 1280 by 720 canvas, in any colorway, and hands you every place a guy can stand. Your page moves the guys; the room file draws everything else.</p>
+  <table class="files"><thead class="sr"><tr><th>file</th><th>what it is</th></tr></thead>
+    <tr><td>dream-machine-rooms.js</td><td><b>The rooms.</b> <code>DM_ROOMS2.draw(ctx, room, colorway, still, time)</code> paints a room. <code>DM_ROOMS2.defs[room].zones</code> lists the places to stand by station: work, think, attention, complete, idle, queued. Load it after persona-engine.js, which has the colorways.</td></tr>
+    <tr><td>persona-live.js</td><td><b>The live drawer.</b> The renderer from the app, with Sol's elf-sovereign head. <code>DM_LIVE.drawCharacter</code> takes the same arguments as the older drawCharacter.</td></tr>
+    <tr><td>dream-machine-starter.html</td><td><b>All of it in one file.</b> Every script plus the room page on the facing page, already wired. Download it, double-click it, click the room to change rooms.</td></tr>
+  </table>
+  <div class="dl"><button type="button" class="nu" data-dl="dream-machine-rooms.js">dream-machine-rooms.js</button><button type="button" class="nu" data-dl="dream-machine-starter.html">dream-machine-starter.html</button></div>
+  <ul class="plain"><li><b>Room keys:</b> forgeFloor, nullArcade, dmParty, observatory, agoraArchive. <code>DM_ROOMS2.order</code> has them in order.</li><li><b>Motion off:</b> pass <code>true</code> for still and nothing in the room moves.</li></ul>`, { toc: "Put Them in a Room", nu: true });
+add("rooms-listing", "A Room Page", `<div class="kick">Chapter 8, continued · the room page</div>
+  <div class="listing tight"><div class="lh">a room with a crew in it<button data-copy="room">Copy</button></div><pre id="lsRoom"></pre></div>`, { nu: true });
+
+add("deploying", "Deploying", `<div class="kick">Chapter 8, continued</div><div class="band blue"><h2>6 · DEPLOYING THIS SITE</h2></div>
+  <p class="dense">The site is fully static: no build step. Any static host works; it was made for Netlify. It is now one file, <code>index.html</code>, plus a share picture and a redirects file:</p>
+  <ul class="plain">
+    <li><b>Drag &amp; drop:</b> go to app.netlify.com/drop and drop the site folder (index.html, og.png, _redirects). Live in seconds.</li>
+    <li><b>Netlify CLI:</b> <code>npx netlify deploy --dir=site --prod</code></li>
+    <li><b>Git-connected:</b> push the folder, set publish directory to the site root, no build command.</li>
+    <li><b>Local preview:</b> double-click index.html, or any static server.</li>
+  </ul>
+  <div class="note"><b>Old links still work</b>The old site had four pages. <code>_redirects</code> sends /process, /roster and /code (with or without .html) to the matching pages in this booklet, and the old section links like #rooms or #how still land in the right place.</div>
+  <div class="note"><b>Two fixes in these downloads</b>persona-module.js now carries the two helpers (hash32 and pick) the old published copy called but never defined, so compile() really does take any name. persona-live.js is the newer drawer from the live app, with Sol's elf-sovereign head and the other parts the published engine is missing: load it after persona-engine.js and call <code>DM_LIVE.drawCharacter</code> with the same arguments.</div>
+  <p class="rfoot">THE CODE · compiled, not drawn · take it, fork it, make weirder lil guys · ${goBtn("the roster", "roster", "alt")}</p>`, { toc: "Deploying" });
+
+add("roster", "The Roster", `<div class="kick">Appendix · every card from the old roster page</div><div class="band grn"><h2>THE ROSTER</h2></div>
+  <p class="dense">Every character compiled live from its recipe, no sprite files, just DNA. Filter by batch, or flip the colorway (the machine ships with three: <b>toxicCandy</b>, <b>spectralOxide</b>, <b>voidArcade</b>).</p>
+  <p class="small">All 129 Dream Machine character formulations, animated live: the 101, the model crew, the anime block. Each card shows the name, the era, the design note and the full recipe line. The four Boyle test dummies live on the Secret Codes page.</p>
+  <div class="cwrow" id="cwRow2">Colorway</div>
+  <div class="jumps" id="jumps"><button type="button" data-jump="all">All</button>${ROSTER_GROUPS.map(([k, l]) => `<button type="button" data-jump="${k}">${esc(cleanLabel(l.split("·").pop().trim()))}</button>`).join("")}</div>
+  <div class="plate"><canvas id="batchRow" width="912" height="300" aria-label="One character from every group"></canvas></div>
+  <div class="cap"><b>Plate 10</b>One from every group, crew to anime</div>
+  <p class="rfoot">THE ROSTER · 129 fixed recipes · 100 unique formulation palettes · ${goBtn("get the code", "code", "alt")}</p>`, { toc: "The Roster", part: "The Roster" });
+const RPAGES = rosterPages();
+RPAGES.forEach((items, i) => {
+  add("roster-" + (i + 1), "The Roster, page " + (i + 1), `<div class="fitwrap">` + items.map(it => it.head
+    ? `<h3 class="rgh" id="roster-${it.head}">${esc(LIVE_LABEL[it.head] || it.head)} · ${GROUPS.find(g => g.key === it.head).keys.length}</h3>`
+    : entryHtml(it.key)).join("") + (i === RPAGES.length - 1 ? `<p class="rfoot" id="rosterEnd">That's all ${PUBLIC.length} public characters. The four Boyle test dummies are on the Secret Codes page.</p>` +
+      (ROSTER_BUDGET - rosterLastH > 330 ? `<div class="plate"><canvas id="genRow" width="912" height="300" aria-label="Six names that are not on the roster, built from their letters"></canvas></div><div class="cap"><b>Plate 11</b>Not on the roster, built from the name anyway: ${GEN_NAMES.join(", ")}</div><div class="btnrow">${goBtn("Make your own", "character-select")}</div>` : "") : "") + `</div>`, { cls: "roster-cont", tab: i === 0 ? "roster" : null });
+});
+
+add("warranty", "Warranty", `<div class="kick">Chapter 9</div><div class="band"><h2>WARRANTY</h2></div>
+  <div class="warranty"><h3 class="mis">90-DAY LIMITED WARRANTY</h3><p class="fine" style="text-align:center;margin-bottom:6px">THE DREAM MACHINE · LOCAL PRESENCE VISUALIZER</p>
+    <p class="fine">The Dream Machine is warranted to the original user to be free of clouds, accounts and phone-home features for ninety (90) days, and for every day after that too.</p>
+    <h4>This warranty covers</h4><ul><li>Reading only. The bridge serves session state as JSON on localhost and never writes anything.</li><li>Loopback only. It answers on 127.0.0.1 and nowhere else.</li><li>Honesty. ${esc(C.features[5].body)}</li><li>Room memory. Clear a room and its crew is saved, so you can bring the scene back.</li></ul>
+    <h4>This warranty does not cover</h4><ul><li>Quarters. It does not take them.</li><li>Characters you name after your boss.</li><li>The real arcade. It closed a long time ago, and we miss it too.</li></ul></div>
+  <div class="coupon">${sealSvg("sealArc2")}<div><b>Warranty registration card</b><span>Keep this card. You will never need to mail it in, because nothing in here phones home.</span></div></div>`, { toc: "Warranty", part: "Back matter" });
+
+add("notes", "Notes", `<div class="kick">For your records</div><div class="band"><h2>NOTES</h2></div>
+  <div class="lined">
+    <button type="button" data-goto="story"><span>Case study</span><i></i><b>chapters 1 to 3</b></button>
+    <button type="button" data-goto="process"><span>The process</span><i></i><b>Atari in, NES out</b></button>
+    <button type="button" data-goto="roster"><span>The roster</span><i></i><b>all 129</b></button>
+    <button type="button" data-goto="code"><span>The code</span><i></i><b>three files</b></button>
+    <a href="${C.links.teamloop}" target="_blank" rel="noopener"><span>TeamLoop</span><i></i><b>github &#8599;</b></a>
+    <a href="${C.links.mark}" target="_blank" rel="noopener"><span>Mark</span><i></i><b>marksalisburyai.com &#8599;</b></a>
+    <div>&nbsp;</div>
+    <div>THE DREAM MACHINE · named for the arcade in the Lincoln Mall, Lincoln RI, early-to-mid 90s</div>
+    <div>built by Mark + Kimi · characters compiled, not drawn</div>
+    <div>second edition, October 2026 · rooms rebuilt with Claude Code</div>
+  </div>`, { toc: "Notes" });
+
+if ((PAGES.length + 1) % 2) add("notes-2", "Notes, continued", `<div class="kick">For your records</div><div class="band"><h2>MORE NOTES</h2></div><div class="lined" aria-label="Blank lines for your own notes"></div>`);
+
+add("back-cover", "Back Cover", `<div class="bk-top"><b>THE DREAM MACHINE</b><span>${esc(C.origin)}</span></div>
+  <ul class="bk-feats">${STATS.map(([n, l]) => `<li><b>${n}</b>${l}</li>`).join("")}<li><b>1</b>HTML file</li></ul>
+  <div class="plate"><canvas id="backRoom" width="1280" height="720" style="image-rendering:auto" aria-label="The Agora Archive with Socrates, Plato, Aristotle, Kant and Beauvoir"></canvas></div>
+  <div class="cap"><b>Actual screen</b>The Agora Archive, where the arguments live.</div>
+  <div class="starring"><div class="cap" style="margin:0"><b>Starring</b>the model crew</div><div class="row">${C.crew.concat(["unmapped"]).map(k => `<div class="plate"><canvas data-crew="${k}" width="56" height="62" aria-label="${esc(DM.meta(k).name)}"></canvas></div>`).join("")}</div></div>
+  <div class="bk-foot"><p class="small" style="margin:0;max-width:280px">${esc(C.credits)} Read-only. Loopback only. Every character drawn from a recipe at 2-pixel resolution.</p><div class="barcode dots" aria-hidden="true" style="background:repeating-linear-gradient(90deg,#1B1712 0 2px,#fff 2px 3px,#1B1712 3px 4px,#fff 4px 7px,#1B1712 7px 10px,#fff 10px 11px) 6px 6px/calc(100% - 12px) calc(100% - 20px) no-repeat,#fff"></div></div>`, { cls: "back" });
+
+const IDX = Object.fromEntries(PAGES.map((p, i) => [p.id, i]));
+const LASTP = PAGES.length - 1;
+const pageEls = PAGES.map((pg, n) => {
+  const el = document.createElement("section");
+  el.className = "page" + (pg.cls ? " " + pg.cls : "");
+  el.id = pg.id; el.dataset.p = n;
+  el.setAttribute("aria-label", n === 0 ? "Cover" : n === LASTP ? "Back cover" : "Page " + n + ": " + pg.title);
+  el.innerHTML = pg.html + (n > 0 && n < LASTP ? `<div class="folio">${n}</div>` : "") +
+    (n > 0 && n < LASTP ? `<button class="dogear${n % 2 ? " left" : ""}" data-go="${n % 2 ? "-1" : "+1"}" aria-label="${n % 2 ? "Previous page" : "Next page"}" tabindex="-1"></button>` : "") +
+    `<i class="staple s1"></i><i class="staple s2"></i>`;
+  return el;
+});
+pageEls.forEach(p => $("#column").append(p));
+const LEAVES = Math.ceil(pageEls.length / 2);
+const LAST = LEAVES;
+const spreadOf = p => p === 0 ? 0 : Math.ceil(p / 2);
+const P = n => pageEls[n];
+const pageOfEl = el => { const s = el && el.closest(".page"); return s ? +s.dataset.p : 0; };
+
+/* ---------- contents, sheet, tabs ---------- */
+const TOC = PAGES.map((p, i) => p.toc ? { label: p.toc, i, part: p.part, nu: p.nu } : null).filter(Boolean);
+const NU = `<em class="nu">NEW</em>`;
+$("#tocList").innerHTML = TOC.map(t => `<li><button data-page="${t.i}"><span>${esc(t.label)}</span>${t.nu ? NU : ""}<i></i><b>${t.i}</b></button></li>`).join("");
+const rangeTxt = (a, b) => `${IDX[a]} to ${IDX[b]}`;
+const lastRoster = PAGES.filter(p => p.id.startsWith("roster-")).pop().id;
+$("#oldPages").innerHTML = `<b>Where the four old pages went</b>Case Study: pages ${rangeTxt("story", "screen-guide")} and ${rangeTxt("tips", "making-of")} · The Process: ${rangeTxt("process", "bigger-2")} · The Roster: ${IDX["characters"]}, ${IDX["cast-index"]}, ${IDX["secret-codes"]} and ${rangeTxt("roster", lastRoster)} · The Code: ${rangeTxt("code", "deploying")}`;
+const sheet = $("#sheet");
+sheet.innerHTML = [`<button data-page="0"><span>Cover</span><i></i><b></b></button>`]
+  .concat(PAGES.map((p, i) => p.toc ? `<button data-page="${i}"><span>${esc(p.toc)}</span>${p.nu ? NU : ""}<i></i><b>${i}</b></button>` + (p.id === "process" ? CHAPTERS.map(([n, t, id]) => `<button class="subt" data-page="${IDX[id]}"><span>${n} ${esc(t)}</span>${PAGES[IDX[id]].nu ? NU : ""}<i></i><b>${IDX[id]}</b></button>`).join("") : "") : ""))
+  .concat([`<button data-page="${LASTP}"><span>Back cover</span><i></i><b></b></button>`]).join("");
+const TABS = [["Play", "how-to-play", "#FFCF1F"], ["Cast", "characters", "#F6A2C4"], ["Stages", "stage-select", "#8FD3F4"], ["Tips", "tips", "#F7B267"], ["Making of", "making-of", "#B8E07A"], ["Process", "process", "#FF8F70"], ["Code", "code", "#9DB7F2"], ["Roster", "roster", "#7ED6A7"], ["Notes", "warranty", "#E6DCC1"]];
+$("#edgeTabs").innerHTML = TABS.map(([l, id, c]) => `<button type="button" data-page="${IDX[id]}" style="--tab:${c}" title="${esc(l)}">${esc(l)}</button>`).join("");
+
+/* ---------- wiring ---------- */
+$("#miniLogo").innerHTML = DM.cloudLogo({ label: "" });
+const CAST = [["opus", 74, 186, 4], ["sonnet", 158, 176, 4], ["flash", 298, 176, 4], ["astra", 382, 186, 4], ["schrodinger", 106, 240, 4], ["jason", 350, 240, 4], ["sol", 228, 268, 6]];
+DM.mount($("#cvCast"), (ctx, t) => { ctx.clearRect(0, 0, 456, 300); for (const [w, x, y, s] of CAST) DM.draw(ctx, x, y, s, w, t); });
+DM.portrait($("#mascotCv"), "sol", { scale: 4, footY: 132 });
+function lineup(cv, keys, scale, rows = 1){
+  if (!cv) return;
+  DM.mount(cv, (ctx, t) => {
+    const W = cv.width, H = cv.height; ctx.clearRect(0, 0, W, H); DM.stage(ctx, W, H);
+    const per = Math.ceil(keys.length / rows), rh = H / rows;
+    keys.forEach((k, i) => { const r = Math.floor(i / per), c = i % per, n = Math.min(per, keys.length - r * per); DM.draw(ctx, W / n * (c + .5), rh * (r + 1) - 18, scale, k, t); });
+  });
+}
+function colorwayPlate(cv, who, scale){
+  if (!cv) return;
+  DM.mount(cv, (ctx, t) => {
+    const W = cv.width, H = cv.height, n = DM.colorways.length, w = W / n;
+    DM.colorways.forEach((cw, i) => { ctx.save(); ctx.beginPath(); ctx.rect(i * w, 0, w, H); ctx.clip(); ctx.translate(i * w, 0); DM.stage(ctx, w, H, cw); DM.draw(ctx, w / 2, H - 20, scale, who, t, { cw }); ctx.restore(); });
+  });
+}
+lineup($("#heroStrip"), HERO, 5.6, 2);
+lineup($("#crewRow"), C.crew, 4.4);
+lineup($("#formRow"), ["franklin", "herschel", "zeno", "bernoulli", "jason", "schrodinger", "ramanujan"], 4.4);
+colorwayPlate($("#teslaRow"), "tesla", 10);
+lineup($("#dialectRow"), ["tesla", "hopper", "curie", "galileo", "saitama", "plato"], 4.4, 2);
+lineup($("#bodyRow"), BODY_KEYS, 4, 2);
+lineup($("#finaleRow"), (GROUPS.find(g => g.key === "batch-7") || { keys: [] }).keys, 4.2, 2);
+lineup($("#batchRow"), GROUPS.map(g => g.keys[0]), 3.6, 2);
+colorwayPlate($("#solCw"), "sol", 6);
+lineup($("#auraRow"), AURA_KEYS, 4.2);
+lineup($("#genRow"), GEN_NAMES, 4.4);
+const backRoom = DM.room($("#backRoom"), "agoraArchive", { cast: ROOM_CAST.agoraArchive, seed: 9 });
+
+// roster appendix + dev fixture portraits (animated, only while on screen)
+$$("canvas[data-rk]").forEach(cv => DM.portrait(cv, cv.dataset.rk, { scale: 1.72, footY: 64 }));
+
+// colorway pickers
+const CWS = Object.keys(DM.COLORWAYS);
+$("#cwSel").innerHTML = CWS.map(c => `<option value="${c}">${c}</option>`).join("");
+$("#cwSel").value = DM.colorway;
+["#cwRow", "#cwRow2"].forEach(sel => { $(sel).insertAdjacentHTML("beforeend", CWS.map(c => `<button type="button" data-cw="${c}" aria-pressed="${c === DM.colorway}">${c}</button>`).join("")); });
+function setCw(c){ DM.setColorway(c); }
+$("#cwSel").addEventListener("change", e => setCw(e.target.value));
+document.addEventListener("click", e => { const b = e.target.closest("[data-cw]"); if (b) setCw(b.dataset.cw); });
+DM.onColorway(c => {
+  statics.forEach(paintStatic); fillBio();
+  $("#cwSel").value = DM.colorway;
+  $$("[data-cw]").forEach(b => b.setAttribute("aria-pressed", b.dataset.cw === DM.colorway ? "true" : "false"));
+});
+
+// bio + index
+let bioIdx = PUBLIC.indexOf("schrodinger"), curGroup = null;
+const bioH = DM.portrait($("#bioCv"), PUBLIC[bioIdx], { scale: 6, footY: 238 });
+function fitName(){
+  const el = $("#bioName"); if (!el.clientWidth) return;
+  let s = mqPhone.matches ? 34 : 44; el.style.fontSize = s + "px";
+  while (el.scrollWidth > el.clientWidth + 1 && s > 18) { s -= 2; el.style.fontSize = s + "px"; }
+}
+function fillBio(){
+  const key = PUBLIC[bioIdx], m = DM.meta(key), d = DM.dna(key);
+  $("#bioName").textContent = m.name.toUpperCase();
+  $("#bioEra").textContent = m.era + " · " + m.groupLabel;
+  $("#bioNote").textContent = m.note;
+  $("#bioFig").textContent = "Fig. " + (bioIdx + 1);
+  $("#bioGroup").textContent = m.groupLabel;
+  $("#bioCount").textContent = (bioIdx + 1) + " / " + PUBLIC.length;
+  $("#bioStats").innerHTML = C.recipeSlots.map(s => `<div><dt>${s}</dt><i></i><dd>${esc(String(d[s] ?? "none").replace(/([a-z])([A-Z])/g, "$1 $2"))}</dd></div>`).join("");
+  const cw = DM.COLORWAYS[DM.colorway];
+  $("#bioSw").innerHTML = `<b style="font-family:var(--head);font-weight:400;font-size:12px">PALETTE</b>` + (d.colors || []).map((c, i) => `<span><i style="background:${cw[c]}"></i>${["base", "second", "accent"][i]}: ${esc(c)}</span>`).join("");
+  fitName();
+  $$("#grid .cell").forEach(b => b.setAttribute("aria-current", b.dataset.k === key ? "true" : "false"));
+}
+function setBio(i, opts = {}){
+  bioIdx = (i + PUBLIC.length) % PUBLIC.length;
+  const key = PUBLIC[bioIdx]; bioH.set(key);
+  const g = DM.meta(key).group;
+  if (g !== curGroup && !opts.keepGroup) showGroup(g);
+  fillBio();
+}
+function showGroup(gk){
+  curGroup = gk; const g = GROUPS.find(x => x.key === gk);
+  $$("#tabs button").forEach(b => b.setAttribute("aria-pressed", b.dataset.g === gk ? "true" : "false"));
+  $("#groupH").textContent = g.label + " · " + g.keys.length;
+  const grid = $("#grid"); grid.innerHTML = "";
+  for (let i = statics.length - 1; i >= 0; i--) if (statics[i].grid) statics.splice(i, 1);
+  for (const k of g.keys) {
+    const b = document.createElement("button"); b.className = "cell"; b.dataset.k = k;
+    b.setAttribute("aria-label", DM.meta(k).name);
+    b.setAttribute("aria-current", k === PUBLIC[bioIdx] ? "true" : "false");
+    const cv = document.createElement("canvas"); cv.width = 76; cv.height = 82;
+    const sp = document.createElement("span"); sp.textContent = DM.meta(k).name;
+    b.append(cv, sp); grid.append(b);
+    staticThumb(cv, k, 2, 78).grid = true;
+    b.addEventListener("click", () => { setBio(PUBLIC.indexOf(k), { keepGroup: true }); if (mode === "phone") scrollToPage(IDX.characters); else if (spreadOf(IDX.characters) !== pos()) go(spreadOf(IDX.characters)); });
+  }
+}
+$("#tabs").addEventListener("click", e => { const b = e.target.closest("button[data-g]"); if (b) showGroup(b.dataset.g); });
+$("#bioPrev").addEventListener("click", () => setBio(bioIdx - 1));
+$("#bioNext").addEventListener("click", () => setBio(bioIdx + 1));
+showGroup(DM.meta(PUBLIC[bioIdx]).group); fillBio();
+$("#castMore").innerHTML = `Every card from the old roster page, with notes and recipes, is in <button type="button" class="linkish" data-goto="roster">the roster appendix, page ${IDX.roster}</button>.`;
+
+// stages
+const stageH = DM.room($("#stageCv"), DM.rooms[0].key, { cast: ROOM_CAST.forgeFloor, seed: 11 });
+function setStage(i){
+  const r = DM.rooms[i];
+  stageH.setRoom(r.key); stageH.setCast(ROOM_CAST[r.key]);
+  $$("#stageBtns button").forEach(b => b.setAttribute("aria-pressed", +b.dataset.i === i ? "true" : "false"));
+  $("#stageFig").textContent = "Stage " + r.icon;
+  $("#stageCap").textContent = r.label;
+  const row = $("#stageWho"); row.innerHTML = "";
+  for (let j = statics.length - 1; j >= 0; j--) if (statics[j].cast) statics.splice(j, 1);
+  for (const k of ROOM_CAST[r.key]) {
+    const b = document.createElement("button"); b.className = "cell"; b.setAttribute("aria-label", "Read " + DM.meta(k).name + "'s page");
+    const cv = document.createElement("canvas"); cv.width = 76; cv.height = 82;
+    const sp = document.createElement("span"); sp.textContent = DM.meta(k).name;
+    b.append(cv, sp); row.append(b); staticThumb(cv, k, 2, 78).cast = true;
+    b.addEventListener("click", () => { setBio(PUBLIC.indexOf(k)); goPage(IDX.characters); });
+  }
+  const dia = DIALECT[r.key];
+  $("#sgDialect").textContent = dia[0]; $("#sgWhy").textContent = dia[1]; $("#sgNum").textContent = r.icon;
+  $("#sgName").textContent = r.label.toUpperCase();
+  $("#sgDesc").textContent = r.description;
+  $("#sgLegend").innerHTML = r.legend.map(([c, t]) => { const [st, means] = t.split(" · "); return `<tr><td><i style="background:${c}"></i>${esc(st)}</td><td>${esc(means || "")}</td></tr>`; }).join("");
+}
+$("#stageBtns").addEventListener("click", e => { const b = e.target.closest("button[data-i]"); if (b) setStage(+b.dataset.i); });
+setStage(0);
+
+$$("canvas[data-crew]").forEach(cv => staticThumb(cv, cv.dataset.crew, 1.5, 58));
+$("#auraCap").innerHTML = `<b>Plate 5</b>Auras as they ship: ${AURA_KEYS.map(k => esc(DM.dna(k).aura) + " (" + esc(DM.meta(k).name) + ")").join(", ")}`;
+$("#bodyCap").innerHTML = `<b>Plate 4</b>One of each body as they ship: ${BODY_KEYS.map(k => esc(DM.dna(k).body) + " (" + esc(DM.meta(k).name) + ")").join(", ")}`;
+$$("canvas[data-tip]").forEach(cv => staticThumb(cv, cv.dataset.tip, 1.8, 70));
+
+// listings, schema, stats, downloads
+$("#lsQuick").textContent = QUICKSTART;
+$("#lsExamples").textContent = EXAMPLES;
+$("#lsRoom").textContent = ROOMQUICK;
+const COPY = { quickstart: QUICKSTART, examples: EXAMPLES, room: ROOMQUICK };
+async function copyText(t){
+  try { await navigator.clipboard.writeText(t); return true; } catch (e) {
+    try { const ta = document.createElement("textarea"); ta.value = t; ta.style.position = "fixed"; ta.style.opacity = "0"; document.body.append(ta); ta.select(); const ok = document.execCommand("copy"); ta.remove(); return ok; } catch (e2) { return false; }
+  }
+}
+$$("[data-copy]").forEach(b => b.addEventListener("click", async () => {
+  const ok = await copyText(COPY[b.dataset.copy]);
+  b.textContent = ok ? "Copied" : "Select it"; setTimeout(() => b.textContent = "Copy", 1600);
+}));
+(function schema(){
+  const tb = $("#schemaTable tbody");
+  tb.innerHTML = Object.entries(PERSONA_SLOTS).map(([slot, opts]) => `<tr><td>${esc(slot)}</td><td>${opts.length}</td><td>${esc(opts.join(", "))}</td></tr>`).join("");
+  const n = Object.keys(PERSONA_RECIPES).length;
+  const combos = new Set(Object.values(PERSONA_RECIPES).map(r => (r.colors || []).slice().sort().join("+")));
+  const total = Object.values(PERSONA_SLOTS).reduce((a, s) => a + s.length, 0);
+  $("#codeStats").textContent = `${n} recipes · ${combos.size} unique palette sets · ${total} total part options across ${Object.keys(PERSONA_SLOTS).length} slots`;
+})();
+function kitSources(){
+  const mark = "/* ==== " + "vendor/persona-module.js ==== */";
+  const s = [...document.scripts].find(x => x.textContent.includes(mark));
+  if (!s) return null;
+  const txt = s.textContent, out = {};
+  const marks = [...txt.matchAll(/\/\* ==== ([^ ]+) ==== \*\/\n/g)];
+  marks.forEach((mk, i) => {
+    const start = mk.index + mk[0].length, end = i + 1 < marks.length ? marks[i + 1].index : txt.length;
+    out[mk[1].split("/").pop()] = txt.slice(start, end).replace(/\n;\n$/, "\n").replace(/<\\\/script/gi, "<" + "/script").replace(/<\\!--/g, "<" + "!--");
+  });
+  // second edition rooms: the dm-rooms2 part script, inlined by the build
+  const rooms = [...document.scripts].find(x => x.textContent.startsWith("/* part dm-rooms2 */\n"));
+  if (rooms) out["dream-machine-rooms.js"] = "// dream-machine-rooms.js: The Dream Machine rooms, second edition. Load it after persona-engine.js.\n" +
+    rooms.textContent.slice("/* part dm-rooms2 */\n".length).replace(/<\\\/script/gi, "<" + "/script").replace(/<\\!--/g, "<" + "!--");
+  return out;
+}
+function dlBody(name, src){
+  let body = src[name] || "";
+  if (name === "persona-module.js") body = "// persona-module.js from The Dream Machine, with hash32 and pick included so compile() works for any name.\n" + (src["live-helpers.js"] || "") + "\n" + body;
+  // meta.js ships with the public notes in place of the old review comments
+  if (name === "meta.js" && typeof DM_PUBLIC_NOTES === "object") body += "\n// Public notes for the characters whose old notes were review comments.\n(function(){ const P = " + JSON.stringify(DM_PUBLIC_NOTES) + "; for (const k in P) if (CHARACTER_META[k]) CHARACTER_META[k].note = P[k]; })();\n";
+  if (name === "dream-machine-starter.html") body = starterHtml(src);
+  return body;
+}
+// The starter: the room page with its four scripts inlined, so one double-clicked file runs a room.
+function starterHtml(src){
+  // (the comment-opener pattern is spelled <!-{2} so this page's own script never contains one)
+  const inline = s => s.replace(/<\/script/gi, "<\\/script").replace(/<!-{2}/g, "<\\!--");
+  const libs = ["persona-module.js", "persona-engine.js", "persona-live.js", "dream-machine-rooms.js"].map(n => `<script>/* ${n} */\n${inline(dlBody(n, src))}\n<\/script>\n`).join("");
+  const program = ROOMQUICK.slice(ROOMQUICK.lastIndexOf("<script>") + 8, ROOMQUICK.lastIndexOf("<\/script>"));
+  return `<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<title>Dream Machine starter</title>\n` +
+    `<style>html,body{margin:0;background:#05030a;color:#f4f1ff;font:15px/1.5 system-ui,sans-serif}main{max-width:1280px;margin:0 auto;padding:16px}canvas{display:block;width:100%;height:auto;cursor:pointer}p{opacity:.8}</style>\n</head>\n<body>\n<main>\n` +
+    `<canvas id="room" width="1280" height="720"></canvas>\n<p>The Dream Machine starter: five guys wandering a room. Click the room for the next one. Change the names in the last script to make your own crew. Every character is compiled from its name, so any name works.</p>\n</main>\n` +
+    libs + `<script>${program}<\/script>\n</body>\n</html>\n`;
+}
+document.addEventListener("click", e => {
+  const b = e.target.closest("[data-dl]"); if (!b) return;
+  const src = kitSources(); if (!src) { b.textContent = "not available here"; return; }
+  const name = b.dataset.dl;
+  const body = dlBody(name, src);
+  const url = URL.createObjectURL(new Blob([body], { type: name.endsWith(".html") ? "text/html" : "text/javascript" }));
+  const a = document.createElement("a"); a.href = url; a.download = name; document.body.append(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 4000);
+});
+
+// roster jumps
+$("#jumps").addEventListener("click", e => {
+  const b = e.target.closest("[data-jump]"); if (!b) return;
+  const k = b.dataset.jump;
+  if (k === "all") { goPage(IDX["roster-1"]); return; }
+  if (k === "dev") { goPage(IDX["secret-codes"], $("#roster-dev")); return; }
+  const h = document.getElementById("roster-" + k); if (h) goPage(pageOfEl(h), h);
+});
+
+/* ---------- character select slot ---------- */
+function hintLine(slot){
+  slot.innerHTML = `<form class="forge" id="forge"><label class="sr" for="forgeIn">Any name</label><input id="forgeIn" maxlength="28" value="Mark" autocomplete="off" spellcheck="false"><button class="btnp" type="submit">Print</button></form>
+    <div class="feed"><div class="head" id="printHead"></div><div class="printout" id="printout"><div class="plate"><canvas id="forgeCv" width="150" height="160"></canvas></div><div class="pr-lines" id="prLines"></div></div></div>
+    <div class="tries" id="tries">Try <button type="button">Sol</button><button type="button">Ramanujan</button><button type="button">Jason</button><button type="button">Lincoln Mall</button><button type="button">Token Machine</button></div>
+    <p class="small" style="margin-top:10px">Names on the roster print their real recipe. Everything else gets built from the letters of the name.</p>`;
+  const forgeH = DM.portrait($("#forgeCv"), "Mark", { scale: 4, footY: 150 });
+  function printName(name, animate = true){
+    name = (name || "").trim() || "Mark";
+    const m = DM.meta(name), known = DM.isKnown(name);
+    forgeH.set(known ? m.key : name);
+    $("#prLines").innerHTML = `<div class="big">${esc(m.name)}</div><div>STATUS: ${known ? "ON THE ROSTER" : "NOT ONE OF THE 129"}</div><div>${known ? esc(m.groupLabel) : "BUILT FROM THE NAME"}</div><div class="rc">${DM.recipeLine(known ? m.key : name).split(" | ").map(x => `<span>${esc(x)}</span>`).join("")}</div>` +
+      (known ? `<div style="margin-top:6px"><button class="btnp" type="button" id="findCast" style="font-size:10.5px;padding:6px 9px">Find on page ${IDX.characters}</button></div>` : "");
+    const fc = $("#findCast"); if (fc) fc.onclick = () => { setBio(PUBLIC.indexOf(m.key)); goPage(IDX.characters); };
+    const out = $("#printout"), head = $("#printHead");
+    if (hasGsap && animate && !DM.reduced) {
+      gsap.killTweensOf([out, head]);
+      gsap.fromTo(out, { clipPath: "inset(0 0 100% 0)" }, { clipPath: "inset(0 0 0% 0)", duration: 1.5, ease: "steps(16)" });
+      gsap.fromTo(head, { opacity: 1, y: 0 }, { y: () => out.offsetHeight, duration: 1.5, ease: "steps(16)", onComplete: () => gsap.to(head, { opacity: 0, duration: .2 }) });
+    } else { out.style.clipPath = "none"; }
+  }
+  $("#forge").addEventListener("submit", e => { e.preventDefault(); printName($("#forgeIn").value); });
+  printName("Mark", false);
+  $("#tries").addEventListener("click", e => { const b = e.target.closest("button"); if (b) { $("#forgeIn").value = b.textContent; printName(b.textContent); } });
+  return printName;
+}
+let printName = null;
+const selSlot = document.getElementById("dm-select-slot");
+if (window.DMSelect) {
+  DMSelect.mount(selSlot, { mode: "manual", theme: "paper" });
+  $("#selWrap").insertAdjacentHTML("afterbegin", `<div class="selbar"><span>Scroll inside the screen, or unfold it</span><button type="button" class="btnp alt" id="unfoldBtn">Unfold it full size</button></div>`);
+  const home = $("#selWrap");
+  $("#unfoldBtn").addEventListener("click", () => { $("#foldInner").append(selSlot); $("#foldout").classList.add("open"); $("#foldClose").focus(); dispatchEvent(new Event("resize")); });
+  const fold = () => { if (!$("#foldout").classList.contains("open")) return; home.append(selSlot); $("#foldout").classList.remove("open"); dispatchEvent(new Event("resize")); $("#unfoldBtn").focus(); };
+  $("#foldClose").addEventListener("click", fold);
+  document.addEventListener("keydown", e => { if (e.key === "Escape") fold(); });
+} else {
+  printName = hintLine(selSlot);
+}
+
+/* ---------- lightbox ---------- */
+const lb = $("#lightbox");
+document.addEventListener("click", e => {
+  const b = e.target.closest("[data-lb]"); if (!b) return;
+  const im = IMG[b.dataset.lb]; const img = b.querySelector("img"); const cap = b.closest("figure").querySelector("figcaption");
+  $("#lbImg").src = im ? im.src : img.src; $("#lbImg").alt = img.alt;
+  $("#lbTitle").textContent = img.alt; $("#lbCap").innerHTML = cap ? cap.innerHTML : "";
+  if (lb.showModal) lb.showModal(); else lb.setAttribute("open", "");
+});
+$("#lbClose").addEventListener("click", () => lb.close ? lb.close() : lb.removeAttribute("open"));
+lb.addEventListener("click", e => { if (e.target === lb) lb.close(); });
+
+/* ---------- the book ---------- */
+const book = $("#book"), wrap = $("#bookWrap");
+const leaves = [];
+let cur = 0, busy = false, mode = null, dest = 0, pending = null, wantPage = null;
+const pos = () => busy ? (pending ?? dest) : cur;
+function buildLeaves(){
+  if (leaves.length) return;
+  for (let k = 0; k < LEAVES; k++) {
+    const leaf = document.createElement("div"); leaf.className = "leaf";
+    const f = document.createElement("div"); f.className = "face front";
+    const b = document.createElement("div"); b.className = "face back";
+    f.innerHTML = b.innerHTML = '<div class="shade"></div>';
+    leaf.append(f, b); book.append(leaf); leaves.push({ leaf, f, b });
+  }
+}
+function toBook(){
+  buildLeaves();
+  leaves.forEach(({ f, b }, k) => { if (pageEls[2 * k]) f.prepend(pageEls[2 * k]); if (pageEls[2 * k + 1]) b.prepend(pageEls[2 * k + 1]); });
+  document.body.classList.add("book-mode"); document.body.classList.remove("phone-mode", "onepage");
+  apply(cur); fit();
+}
+function toColumn(){
+  const col = $("#column"); pageEls.forEach(p => { p.inert = false; col.append(p); });
+  document.body.classList.remove("book-mode"); document.body.classList.add("phone-mode");
+  document.body.classList.toggle("onepage", onePage && !mqPhone.matches);
+  fitName();
+}
+const shiftFor = s => s === 0 ? -PW / 2 : s === LAST ? PW / 2 : 0;
+function setLeaf(k, turned){
+  const L = leaves[k].leaf;
+  if (hasGsap) gsap.set(L, { rotationY: turned ? -180 : 0 }); else L.style.transform = `rotateY(${turned ? -180 : 0}deg)`;
+}
+function apply(s){
+  leaves.forEach(({ leaf, f, b }, k) => {
+    const turned = k < s;
+    setLeaf(k, turned);
+    leaf.style.zIndex = turned ? 10 + k : 100 - k;
+    leaf.style.display = (k === s - 1 || k === s) ? "" : "none";
+    f.inert = !(k === s && !turned); b.inert = !(k === s - 1);
+    if (hasGsap) gsap.set([f.querySelector(".shade"), b.querySelector(".shade")], { opacity: 0 });
+  });
+  if (hasGsap) gsap.set(book, { x: shiftFor(s) }); else book.style.transform = `translateX(${shiftFor(s)}px)`;
+  const L = $(".stack.L"), R = $(".stack.R");
+  const nl = Math.max(0, s - 1), nr = Math.max(0, LEAVES - s - 1);
+  const edge = (n, dir) => Array.from({ length: Math.min(n, 9) }, (_, i) => `${dir * (i + 1) * 1.3}px ${(i + 1) * .7}px 0 0 ${i % 2 ? "#E6DCC1" : "#CDBF9D"}`).concat(["0 26px 50px rgba(50,35,10,.35)"]).join(",");
+  L.style.display = s > 0 ? "" : "none"; R.style.display = s < LAST ? "" : "none";
+  L.style.boxShadow = edge(nl, -1); R.style.boxShadow = edge(nr, 1);
+  ui(s);
+}
+function spreadPages(s){ return s === 0 ? [0] : [2 * s - 1, 2 * s].filter(p => p <= LASTP); }
+function ui(s){
+  const ps = spreadPages(s);
+  const title = ps.map(p => PAGES[p].title).filter((t, i, a) => a.indexOf(t) === i).join(" · ");
+  $("#where").textContent = title;
+  const label = s === 0 ? "Cover" : s === LAST ? "Back cover" : ps.length > 1 ? `Pages ${ps[0]} and ${ps[1]}` : `Page ${ps[0]}`;
+  $("#pageLabel").textContent = label;
+  $("#live").textContent = label + ": " + title;
+  $("#prev").disabled = s === 0; $("#next").disabled = s === LAST;
+  $("#scrub").value = s;
+  $("#edgeTabs").style.display = s === LAST ? "none" : "";
+  let active = null; for (const [, id] of TABS) if (IDX[id] <= Math.max(...ps)) active = id;
+  $$("#edgeTabs button").forEach(b => b.setAttribute("aria-current", active && +b.dataset.page === IDX[active] ? "true" : "false"));
+  if (ps.includes(IDX.characters)) requestAnimationFrame(fitName);
+  const hashId = wantPage != null && ps.includes(wantPage) ? PAGES[wantPage].id : PAGES[ps[0]].id;
+  setHash(hashId);
+}
+function setHash(id){
+  if (OG) return;
+  const want = "#" + id;
+  if (location.hash !== want || location.search) { try { history.replaceState(null, "", location.pathname + want); } catch (e) {} }
+}
+function go(target){
+  if (mode === "phone") { scrollToPage(target === 0 ? 0 : 2 * target - 1); return; }
+  target = Math.max(0, Math.min(LAST, target));
+  if (busy) { pending = target === dest ? null : target; return; }
+  if (target === cur) { ui(cur); return; }
+  const from = cur, dir = target > from ? 1 : -1;
+  const lo = Math.min(from, target), hi = Math.max(from, target);
+  if (!hasGsap || DM.reduced) { cur = target; apply(cur); return; }
+  if (hi - lo > 3) { const snap = target - dir * 3; cur = snap; apply(snap); return go(target); }
+  busy = true; dest = target;
+  leaves.forEach(({ leaf, f, b }, k) => { leaf.style.display = (k >= lo - 1 && k <= hi) ? "" : "none"; f.inert = b.inert = true; });
+  const turning = dir > 0 ? Array.from({ length: hi - lo }, (_, i) => lo + i) : Array.from({ length: hi - lo }, (_, i) => hi - 1 - i);
+  const many = turning.length > 1, D = many ? .55 : .85, gap = many ? .11 : 0;
+  const tl = gsap.timeline({ onComplete: () => { busy = false; cur = target; apply(cur); if (pending !== null) { const p = pending; pending = null; go(p); } } });
+  turning.forEach((k, i) => {
+    const { leaf, f, b } = leaves[k];
+    tl.set(leaf, { zIndex: 300 + i }, i * gap);
+    tl.to(leaf, { rotationY: dir > 0 ? -180 : 0, duration: D, ease: "power2.inOut" }, i * gap);
+    tl.to([f.querySelector(".shade"), b.querySelector(".shade")], { opacity: .6, duration: D / 2, yoyo: true, repeat: 1, ease: "sine.inOut" }, i * gap);
+  });
+  tl.to(book, { x: shiftFor(target), duration: D + gap * (turning.length - 1), ease: "power2.inOut" }, 0);
+  ui(target);
+}
+// go to a page (by index); in the column, scroll to it (or to an element inside it)
+function goPage(p, el){
+  wantPage = p;
+  if (mode === "phone") { quietScroll(); (el || pageEls[p]).scrollIntoView({ behavior: DM.reduced ? "auto" : "smooth", block: "start" }); setHash(PAGES[p].id); return; }
+  closeSheet(); go(spreadOf(p));
+}
+function fit(){
+  if (mode !== "book") return;
+  const W = innerWidth, H = OG ? innerHeight : innerHeight - 54 - 62;
+  const k = OG ? (H - 20) / PH : Math.min((W - 60) / (PW * 2 + 40 + 190), (H - 24) / PH, 1.35);
+  wrap.style.transform = `scale(${k})`;
+}
+function scrollToPage(p){ const el = pageEls[p]; if (el) { quietScroll(); el.scrollIntoView({ behavior: DM.reduced ? "auto" : "smooth", block: "start" }); setHash(PAGES[p].id); } }
+function layout(){
+  const m = mqPhone.matches || onePage ? "phone" : "book";
+  if (m !== mode) {
+    const keep = mode === "phone" ? currentColumnPage() : (mode === "book" ? spreadPages(cur)[0] : null);
+    mode = m;
+    if (m === "book") { if (keep != null) cur = spreadOf(keep); toBook(); }
+    else { toColumn(); if (keep != null && keep > 0) requestAnimationFrame(() => pageEls[keep].scrollIntoView({ block: "start" })); }
+  }
+  document.body.classList.toggle("onepage", mode === "phone" && onePage && !mqPhone.matches);
+  applyFit();
+  $("#viewBtn").textContent = onePage ? "Booklet" : "One page";
+  $("#viewBtn").setAttribute("aria-pressed", onePage ? "true" : "false");
+  fit();
+}
+
+/* roster pages: if the estimate packed a page a little too full, shrink that page to fit (book only) */
+function measureFit(){
+  const probe = document.createElement("section"); probe.className = "page"; probe.style.cssText = "position:absolute;left:-10000px;top:0;height:auto;visibility:hidden";
+  document.body.append(probe);
+  for (const w of $$(".fitwrap")) {
+    const parent = w.parentNode, next = w.nextSibling;
+    w.style.transform = ""; w.style.width = "";
+    probe.append(w); const h = w.getBoundingClientRect().height; parent.insertBefore(w, next);
+    w.dataset.k = Math.min(1, 646 / h).toFixed(4);
+  }
+  probe.remove(); applyFit();
+}
+function applyFit(){
+  for (const w of $$(".fitwrap")) {
+    const k = +w.dataset.k || 1, on = mode === "book" && k < 1;
+    w.style.transformOrigin = "0 0"; w.style.transform = on ? `scale(${k})` : ""; w.style.width = on ? (100 / k) + "%" : "";
+  }
+}
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(measureFit); else setTimeout(measureFit, 500);
+
+/* column mode: track the page in view for the label and the link */
+let colPage = 0;
+function currentColumnPage(){ return colPage; }
+const colIO = "IntersectionObserver" in window ? new IntersectionObserver(es => {
+  if (mode !== "phone") return;
+  const vis = es.filter(e => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+  if (vis) { colPage = +vis.target.dataset.p; $("#where").textContent = PAGES[colPage].title; if (!scrolling) setHash(PAGES[colPage].id); }
+}, { rootMargin: "-60px 0px -70% 0px" }) : null;
+let scrolling = false, scrollTimer = 0;
+function quietScroll(){ scrolling = true; clearTimeout(scrollTimer); scrollTimer = setTimeout(() => { scrolling = false; }, 1000); }
+if (colIO) pageEls.forEach(p => colIO.observe(p));
+
+/* ---------- controls ---------- */
+$("#scrub").max = LAST;
+$("#scrub").addEventListener("input", e => { wantPage = null; go(+e.target.value); });
+$("#prev").addEventListener("click", () => { wantPage = null; go(pos() - 1); });
+$("#next").addEventListener("click", () => { wantPage = null; go(pos() + 1); });
+document.addEventListener("click", e => {
+  const d = e.target.closest("[data-go]"); if (d) { e.preventDefault(); wantPage = null; go(pos() + (+d.dataset.go)); return; }
+  const t = e.target.closest("[data-page]"); if (t) { e.preventDefault(); closeSheet(); goPage(+t.dataset.page); return; }
+  const g = e.target.closest("[data-goto]"); if (g) { e.preventDefault(); const i = IDX[g.dataset.goto]; if (i != null) goPage(i); }
+});
+$("#brandLink").addEventListener("click", e => { e.preventDefault(); if (mode === "phone") { scrollTo({ top: 0, behavior: DM.reduced ? "auto" : "smooth" }); setHash("cover"); } else { wantPage = 0; go(0); } });
+$("#viewBtn").addEventListener("click", () => {
+  onePage = !onePage;
+  try { localStorage.setItem("dm-manual-view", onePage ? "onepage" : "book"); } catch (e) {}
+  layout();
+});
+$("#skipLink").addEventListener("click", e => {
+  e.preventDefault();
+  if (!onePage && !mqPhone.matches) { onePage = true; layout(); }
+  $("#column").focus({ preventScroll: true }); scrollTo({ top: 0 });
+});
+function closeSheet(){ sheet.classList.remove("open"); $("#tocBtn").setAttribute("aria-expanded", "false"); }
+$("#tocBtn").addEventListener("click", e => { e.stopPropagation(); const open = !sheet.classList.contains("open"); sheet.classList.toggle("open", open); $("#tocBtn").setAttribute("aria-expanded", open ? "true" : "false"); if (open) sheet.querySelector("button").focus(); });
+document.addEventListener("click", e => { if (!e.target.closest("#sheet,#tocBtn")) closeSheet(); });
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") { closeSheet(); return; }
+  if (mode !== "book" || /INPUT|TEXTAREA|SELECT/.test(e.target.tagName) || e.target.type === "range") return;
+  if (e.altKey || e.ctrlKey || e.metaKey) return;
+  if (e.key === "ArrowRight" || e.key === "PageDown") { e.preventDefault(); wantPage = null; go(pos() + 1); }
+  else if (e.key === "ArrowLeft" || e.key === "PageUp") { e.preventDefault(); wantPage = null; go(pos() - 1); }
+  else if (e.key === "Home") { e.preventDefault(); wantPage = null; go(0); }
+  else if (e.key === "End") { e.preventDefault(); wantPage = null; go(LAST); }
+});
+let wheelLock = 0;
+$("#desk").addEventListener("wheel", e => {
+  if (mode !== "book" || Math.abs(e.deltaY) < 24) return;
+  const inner = e.target.closest("#dm-select-slot, .sheet"); if (inner && inner.scrollHeight > inner.clientHeight + 2) return;
+  e.preventDefault(); const now = performance.now(); if (now < wheelLock) return; wheelLock = now + 650;
+  wantPage = null; go(pos() + (e.deltaY > 0 ? 1 : -1));
+}, { passive: false });
+let tx = null;
+$("#desk").addEventListener("touchstart", e => { tx = e.touches[0].clientX; }, { passive: true });
+$("#desk").addEventListener("touchend", e => { if (tx == null) return; const dx = e.changedTouches[0].clientX - tx; if (Math.abs(dx) > 50) { wantPage = null; go(pos() + (dx < 0 ? 1 : -1)); } tx = null; });
+
+/* ---------- deep links: #page-id, #character/name, old site anchors, ?p= from the redirects ---------- */
+const OLD = { what: "what-it-is", does: "screen-guide", upgrade: "making-of", how: "how-to-play" };
+function route(){
+  let h = ""; try { h = decodeURIComponent(location.hash.slice(1)); } catch (e) { h = location.hash.slice(1); }
+  if (h.startsWith("character/")) { const k = DM.keyOf(h.slice(10)); if (k && PUBLIC.includes(k)) { setBio(PUBLIC.indexOf(k)); return { page: IDX.characters, hash: h }; } }
+  if (OLD[h]) h = OLD[h];
+  if (h in IDX) return { page: IDX[h] };
+  const from = Q.get("p");
+  if (from && IDX[from] != null) return { page: IDX[from] };
+  return { page: 0 };
+}
+addEventListener("hashchange", () => { const r = route(); goPage(r.page); });
+
+addEventListener("resize", layout);
+if (mqPhone.addEventListener) mqPhone.addEventListener("change", layout);
+DM.onReduced(() => { if (busy && hasGsap) { gsap.globalTimeline.getChildren().forEach(t => t.progress(1)); } });
+const start = route();
+if (start.page) { cur = spreadOf(start.page); wantPage = start.page; }
+layout();
+if (mode === "phone" && start.page) { quietScroll(); } if (mode === "phone" && start.page) requestAnimationFrame(() => { pageEls[start.page].scrollIntoView({ block: "start" }); setHash(PAGES[start.page].id); });
+else if (mode === "book") { if (start.hash) setTimeout(() => { try { history.replaceState(null, "", location.pathname + "#" + start.hash); } catch (e) {} }, 0); }
+// testing hook
+window.DMManual = { go, goPage, get spread(){ return cur; }, get busy(){ return busy; }, get mode(){ return mode; }, setBio, setStage, printName, pages: PAGES.map(p => p.id), IDX, LAST,
+  // for the download tests: the exact text each download button saves
+  download: name => { const src = kitSources(); return src ? dlBody(name, src) : null; }, listings: COPY };
+})();
+</script>
+</body>
+</html>
