@@ -637,7 +637,7 @@ function pick(items,seed){return items[seed%items.length]}
         boyle:{label:"Boyle",body:"round",head:"round",face:"grin",hat:"curls",outfit:"suit",prop:"microphone",aura:"bubbles",motif:"tie",colors:["rust","paper","gold"]},
         boyle99:{label:"Boyle",body:"round",head:"round",face:"grin",hat:"curls",outfit:"coat",prop:"scroll",aura:"bubbles",motif:"badge",colors:["gold","paper","cyan"]},
         boylestage:{label:"Boyle",body:"round",head:"round",face:"grin",hat:"curls",outfit:"suit",prop:"microphone",aura:"stars",motif:"tie",colors:["pink","paper","gold"]},
-        boyleactor:{label:"Boyle",body:"armor",head:"square",face:"deadpan",hat:"bald",outfit:"coat",prop:"none",aura:"shadow",motif:"scar",colors:["steel","paper","rust"]},
+        boyleactor:{label:"Boyle",body:"armor",head:"square",face:"deadpan",hat:"none",outfit:"coat",prop:"none",aura:"shadow",motif:"scar",colors:["steel","paper","rust"]},
         boylegas:{label:"Boyle",body:"round",head:"bald",face:"glasses",hat:"none",outfit:"coat",shell:"battery",prop:"flask",aura:"bubbles",motif:"alchemy",colors:["bronze","mint","paper"]},
         heisenberg:{label:"Heisenberg",body:"round",head:"bald",face:"glasses",hat:"porkpie",outfit:"coat",prop:"flask",aura:"chemistry",motif:"tie",colors:["gold","steel","cyan"]},
         kaneda:{label:"Kaneda",body:"fighter",head:"round",face:"visor",hat:"rider",outfit:"jacket",prop:"psychic",aura:"psychic",motif:"number",colors:["rust","gold","cyan"],provenance:"private-homage"},
@@ -763,8 +763,26 @@ function pick(items,seed){return items[seed%items.length]}
       function personaKey(value){return String(value||"").trim().toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,32)||"unknown"}
       function validatePersonaDNA(raw,key){const clean={...PERSONA_DEFAULTS,v:PERSONA_SCHEMA_VERSION,key,label:String(raw?.label||key).slice(0,32)};for(const slot of Object.keys(PERSONA_SLOTS))clean[slot]=PERSONA_SLOTS[slot].includes(raw?.[slot])?raw[slot]:PERSONA_DEFAULTS[slot];const allowedColors=new Set(Object.keys(COLORWAYS.voidArcade));const colors=Array.isArray(raw?.colors)?raw.colors.filter(color=>allowedColors.has(color)).slice(0,3):[];clean.colors=colors.length===3?colors:[...PERSONA_DEFAULTS.colors];clean.provenance=["original","private-homage","generated"].includes(raw?.provenance)?raw.provenance:"original";return clean}
       function generatedPersonaDNA(key){const seed=hash32(`dna-v${PERSONA_SCHEMA_VERSION}:${key}`);const choose=(slot,shift)=>pick(PERSONA_SLOTS[slot],seed>>>shift);const colorKeys=["cyan","violet","pink","gold","mint","rust","silver","steel","bronze"];return validatePersonaDNA({label:key.replaceAll("-"," "),body:choose("body",0),head:choose("head",3),face:choose("face",6),hat:choose("hat",9),outfit:choose("outfit",12),shell:/*SHELL-THIRD*/(seed>>>15)%3===0?pick(PERSONA_SLOTS.shell.slice(1),seed>>>18):"none",prop:choose("prop",18),aura:choose("aura",21),motif:choose("motif",24),colors:[pick(colorKeys,seed),pick(colorKeys,seed>>>7),pick(colorKeys,seed>>>14)],provenance:"generated"},key)}
-      function compilePersonaDNA(agent){if(agent?._compiledPersonaDNA?.v===PERSONA_SCHEMA_VERSION)return agent._compiledPersonaDNA;if(agent?.avatarDNA?.v===PERSONA_SCHEMA_VERSION)return validatePersonaDNA(agent.avatarDNA,agent.avatarDNA.key||agent.personaKey||agent.avatarVariant||agent.name);const key=personaKey(agent?.personaKey||agent?.avatarVariant||agent?.name);if(!personaCache.has(key)){personaCompileBuilds++;personaCache.set(key,validatePersonaDNA(PERSONA_RECIPES[key]||generatedPersonaDNA(key),key))}return personaCache.get(key)}
-      window.TeamLoopPersona=Object.freeze({schemaVersion:PERSONA_SCHEMA_VERSION,catalog:Object.freeze(Object.keys(PERSONA_RECIPES)),normalize:personaKey,isKnown:name=>Object.hasOwn(PERSONA_RECIPES,personaKey(name)),compile:(name,key)=>({...compilePersonaDNA({name,personaKey:key||name,avatarArchetype:"persona"})}),metrics:()=>({builds:personaCompileBuilds,cacheSize:personaCache.size}),catalogValid:()=>Object.entries(PERSONA_RECIPES).every(([key,recipe])=>JSON.stringify(validatePersonaDNA(recipe,key))===JSON.stringify(compilePersonaDNA({personaKey:key,avatarArchetype:"persona"})))});
+      function compilePersonaDNA(agent){if(agent?._compiledPersonaDNA?.v===PERSONA_SCHEMA_VERSION)return agent._compiledPersonaDNA;if(agent?.avatarDNA?.v===PERSONA_SCHEMA_VERSION)return validatePersonaDNA(agent.avatarDNA,agent.avatarDNA.key||agent.personaKey||agent.avatarVariant||agent.name);const key=personaKey(agent?.personaKey||agent?.avatarVariant||agent?.name);if(!personaCache.has(key)){personaCompileBuilds++;personaCache.set(key,validatePersonaDNA(Object.hasOwn(PERSONA_RECIPES,key)?PERSONA_RECIPES[key]:generatedPersonaDNA(key),key))}return personaCache.get(key)}
+      function catalogValid(){
+        return Object.values(PERSONA_RECIPES).every(recipe =>
+          Object.entries(PERSONA_SLOTS).every(([slot, values]) => !Object.hasOwn(recipe, slot) || values.includes(recipe[slot])) &&
+          Array.isArray(recipe.colors) && recipe.colors.length === 3 &&
+          recipe.colors.every(color => Object.hasOwn(COLORWAYS.voidArcade, color))
+        );
+      }
+      window.TeamLoopPersona=Object.freeze({
+        schemaVersion:PERSONA_SCHEMA_VERSION,
+        catalog:Object.freeze(Object.keys(PERSONA_RECIPES)),
+        normalize:personaKey,
+        isKnown:name=>Object.hasOwn(PERSONA_RECIPES,personaKey(name)),
+        compile:(name,key)=>{
+          const dna=compilePersonaDNA({name,personaKey:key||name,avatarArchetype:"persona"});
+          return {...dna,colors:[...dna.colors]};
+        },
+        metrics:()=>({builds:personaCompileBuilds,cacheSize:personaCache.size}),
+        catalogValid
+      });
 
 ;
 /* ==== vendor/persona-engine.js ==== */

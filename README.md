@@ -8,11 +8,11 @@ The Dream Machine is how I watch my AI team work. Every agent session on my comp
 
 This repo is the public half: the character engine, the five arcade rooms, a one-file starter, and **The Manual**, the instruction booklet that doubles as the case study. Read it at **https://starforge-dream-machine.netlify.app/**.
 
-There are no sprite files. Every character compiles from a recipe (body, head, face, hat, outfit, shell, prop, aura, motif and three colors), drawn on a canvas at a 2-pixel grid. 129 names have hand-designed recipes. Any other name gets built from its letters. Same name, same guy, every time.
+There are no sprite files. Every character compiles from a recipe (body, head, face, hat, outfit, shell, prop, aura, motif and three colors), drawn on a canvas at a 2-pixel grid. The roster has 129 hand-designed recipes. Other names generate a character from a normalized key. Same key, same guy, every time.
 
 ## Try it in ten seconds
 
-Download [`starter/dream-machine-starter.html`](starter/dream-machine-starter.html) and double-click it. Five guys wander the DM Main Floor. Click the room for the next one. Change the names in the last script and you have your own crew.
+Save [the starter HTML file](https://raw.githubusercontent.com/thebeefasaurusrex/dream-machine/main/starter/dream-machine-starter.html) using **Save link as**, then double-click it. Five guys wander the DM Main Floor. Click the room for the next one. Change the names in the last script and you have your own crew.
 
 ![The DM Main Floor: prize wall, five arcade cabinets, token machine, prize pickup, a lounge, with characters standing around](docs/room-forgeFloor.png)
 
@@ -48,7 +48,11 @@ Download [`starter/dream-machine-starter.html`](starter/dream-machine-starter.ht
 </script>
 ```
 
-Colorways: `voidArcade`, `toxicCandy`, `spectralOxide`.
+Load the classic scripts in the order shown. They share browser globals so the examples can run straight from a file.
+
+Names are lowercased, runs of non-ASCII-alphanumeric characters become hyphens, and keys are limited to 32 characters. Different names can normalize to the same key. Use `TeamLoopPersona.compile("Zeno Of Citium", "zeno")` for a display name whose roster key differs, or pass a short, distinct key of your own.
+
+Colorways include `voidArcade`, `toxicCandy`, and `spectralOxide`.
 
 ## Put them in a room
 
@@ -70,7 +74,9 @@ node test/check.mjs           # checks the engine and the build
 
 The four Google Fonts the Manual uses are already cached in `manual-src/cache/fonts`, so the build works offline. Deploy `manual/` to any static host. On Netlify: drag the folder onto app.netlify.com/drop, or `npx netlify deploy --dir manual --prod`.
 
-To add a character, add one recipe to `PERSONA_RECIPES` in `persona-module.js` with a three-color set nobody else uses. The Manual's code chapter has the full schema and example recipes.
+Edit recipes in [`manual-src/vendor/persona-module.js`](manual-src/vendor/persona-module.js), room definitions in [`manual-src/src/parts/dm-rooms2.js`](manual-src/src/parts/dm-rooms2.js), and the Manual and example listings in [`manual-src/src/site/manual.html`](manual-src/src/site/manual.html). Rebuild and commit the generated files in `engine/`, `starter/`, and `manual/index.html` with the source change. CI rebuilds from the checked-in font cache, runs the checks, and rejects drift.
+
+This public edition started as an October 22, 2026 snapshot ([`2c12d90`](https://github.com/thebeefasaurusrex/dream-machine/tree/2c12d90)). The public build uses the sources in this repo. The extraction comments record the history of those files.
 
 ## What's not here
 

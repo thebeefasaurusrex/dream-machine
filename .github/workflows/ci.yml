@@ -1,0 +1,27 @@
+name: CI
+on: [push, pull_request]
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build and test on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+      - name: Rebuild using checked-in assets
+        run: node --no-experimental-fetch manual-src/build.mjs
+      - run: npm test
+      - name: Verify generated files match the checkout
+        shell: bash
+        run: |
+          git diff --exit-code HEAD -- engine starter manual
+          git status --porcelain -- engine starter manual
+          test -z "$(git status --porcelain -- engine starter manual)"
